@@ -76,6 +76,9 @@ function Formulario() {
         <button type="button" className="cambiar" onClick={() => setCrear(!crear)}>
           {crear ? "Ya tengo cuenta" : "Crear una cuenta nueva"}
         </button>
+        <p style={{ fontSize: 14 }}>
+          ¿Solo quiere conocer el sitio? <Link href="/demo">Probar sin cuenta</Link>.
+        </p>
       </form>
     </main>
     </div>

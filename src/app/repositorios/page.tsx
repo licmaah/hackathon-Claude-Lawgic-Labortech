@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { BarraSitio } from "@/componentes/BarraSitio";
 import { ComprarPrueba } from "@/componentes/ComprarPrueba";
 import { A_LA_VENTA, GRATUITOS } from "@/datos/repositorios";
@@ -30,7 +29,7 @@ export default async function Repositorios({ searchParams }: { searchParams: Pro
                 <h3>{r.nombre}</h3>
                 <p>{r.descripcion}</p>
                 <div className="acciones">
-                  <Link href={r.abrir} className="btn lleno">{r.accion}</Link>
+                  <a href={r.abrir} className="btn lleno">{r.accion}</a>
                   <a href={r.github} className="btn">Ver en GitHub</a>
                 </div>
               </article>
