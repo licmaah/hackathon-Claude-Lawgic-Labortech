@@ -1,0 +1,473 @@
+{
+ "S": {
+  "993": {
+   "art": "Art. 993",
+   "min": 250,
+   "max": 2500,
+   "what": "Porcentaje mínimo de trabajadores mexicanos (art. 7)"
+  },
+  "995": {
+   "art": "Art. 995",
+   "min": 50,
+   "max": 2500,
+   "what": "Normas de trabajo de mujeres y menores; certificado de no embarazo; despido por embarazo"
+  },
+  "1002": {
+   "art": "Art. 1002",
+   "min": 50,
+   "max": 5000,
+   "what": "Cualquier otra violación a las normas de trabajo sin multa específica"
+  },
+  "994-I": {
+   "art": "Art. 994, fr. I",
+   "min": 50,
+   "max": 250,
+   "what": "Jornada diaria (art. 61), descanso semanal (art. 69) y vacaciones (arts. 76 y 77)"
+  },
+  "994-II": {
+   "art": "Art. 994, fr. II",
+   "min": 250,
+   "max": 5000,
+   "what": "Participación de los trabajadores en las utilidades (PTU)"
+  },
+  "994-III": {
+   "art": "Art. 994, fr. III",
+   "min": 50,
+   "max": 1500,
+   "what": "Obligaciones del art. 132, frs. IV, VII, VIII, IX, X, XII, XIV, XXII y XXVI Bis (constancias, becas, INFONACOT, entre otras)"
+  },
+  "994-IV": {
+   "art": "Art. 994, fr. IV",
+   "min": 250,
+   "max": 5000,
+   "what": "Capacitación y adiestramiento (art. 132, fr. XV)"
+  },
+  "994-IVB": {
+   "art": "Art. 994, fr. IV Bis",
+   "min": 250,
+   "max": 5000,
+   "what": "Registro electrónico de jornada (art. 132, fr. XXXIV). Sus reglas generales rigen desde el 1 de enero de 2027"
+  },
+  "994-V": {
+   "art": "Art. 994, fr. V",
+   "min": 250,
+   "max": 5000,
+   "what": "Normas de seguridad e higiene y medidas para prevenir riesgos de trabajo"
+  },
+  "994-VI": {
+   "art": "Art. 994, fr. VI",
+   "min": 250,
+   "max": 5000,
+   "what": "Discriminación, hostigamiento o acoso sexual, o tolerarlos"
+  },
+  "995B": {
+   "art": "Art. 995 Bis",
+   "min": 250,
+   "max": 5000,
+   "what": "Trabajo de menores de 15 años fuera del círculo familiar. Además, prisión de 1 a 4 años",
+   "jail": true
+  },
+  "1004-A": {
+   "art": "Art. 1004-A",
+   "min": 250,
+   "max": 5000,
+   "what": "No permitir la inspección. Además se presume que la empresa no tiene la información"
+  },
+  "1004-C": {
+   "art": "Art. 1004-C",
+   "min": 2000,
+   "max": 50000,
+   "what": "Subcontratación prohibida o servicios especializados sin registro REPSE (también para quien se beneficia)"
+  }
+ },
+ "SECTIONS": [
+  {
+   "id": "ident",
+   "title": "Identificación de la empresa y seguridad social",
+   "items": [
+    {
+     "id": "a1",
+     "q": "Constancia de situación fiscal con el domicilio del centro de trabajo",
+     "d": "Es lo primero que pide el inspector para asentar la razón social y el domicilio correctos.",
+     "f": "Acta, apartado de domicilio",
+     "s": null,
+     "note": "Sin multa directa. Evita errores de identificación en el acta."
+    },
+    {
+     "id": "a2",
+     "q": "Acta constitutiva y poder notarial del representante legal, en copia, en el centro de trabajo",
+     "d": "Si nadie con poder atiende, el acta se levanta con quien esté presente y lo que diga obliga a la empresa.",
+     "f": "Acta, apartado de personalidad",
+     "s": null,
+     "note": "Sin multa directa. Protege a la empresa en la diligencia."
+    },
+    {
+     "id": "a3",
+     "q": "Pago de cuotas al IMSS de los últimos meses (SIPARE, resumen de liquidación, cédula de determinación)",
+     "d": "Comprobantes de pago y listado de trabajadores afiliados.",
+     "f": "Art. 15 LSS",
+     "s": "EXT",
+     "note": "La multa la impone el IMSS conforme a la Ley del Seguro Social, no la LFT."
+    },
+    {
+     "id": "a4",
+     "q": "Aportaciones al INFONAVIT al corriente (últimos bimestres)",
+     "d": "Comprobantes bimestrales y SUA.",
+     "f": "Art. 136 LFT",
+     "s": "1002",
+     "pw": false
+    },
+    {
+     "id": "a5",
+     "q": "Centro de trabajo afiliado al INFONACOT",
+     "d": "Constancia de afiliación. Es gratuita.",
+     "f": "Art. 132, fr. XXVI Bis LFT",
+     "s": "994-III",
+     "pw": false
+    }
+   ]
+  },
+  {
+   "id": "contrat",
+   "title": "Contratación y personal",
+   "items": [
+    {
+     "id": "b1",
+     "q": "Contrato individual por escrito y firmado de cada trabajador",
+     "d": "Con los datos del art. 25: puesto, lugar, jornada, salario, día y lugar de pago, capacitación, descansos y vacaciones. Aplica cuando no hay contrato colectivo.",
+     "f": "Arts. 24, 25 y 804, fr. I LFT",
+     "s": "1002",
+     "pw": true
+    },
+    {
+     "id": "b2",
+     "q": "Designación de beneficiarios en cada contrato",
+     "d": "Quién cobra salarios y prestaciones si el trabajador fallece.",
+     "f": "Art. 25, fr. X LFT",
+     "s": "1002",
+     "pw": true
+    },
+    {
+     "id": "b3",
+     "q": "Finiquitos firmados y bajas ante el IMSS del último mes",
+     "d": "Recibo de finiquito firmado o timbrado y acuse de baja.",
+     "f": "Arts. 33 y 47 LFT; art. 15, fr. I LSS",
+     "s": "1002",
+     "pw": false
+    },
+    {
+     "id": "b4",
+     "q": "Al menos 90% de la plantilla es de nacionalidad mexicana",
+     "d": "No cuentan directores, administradores ni gerentes generales.",
+     "f": "Art. 7 LFT",
+     "s": "993",
+     "pw": false
+    },
+    {
+     "id": "b5",
+     "q": "Trabajadores extranjeros con documento migratorio vigente que permita trabajar",
+     "d": "Constancia de inscripción del empleador ante el INM y aviso de contratación.",
+     "f": "Ley de Migración",
+     "s": "EXT",
+     "note": "El inspector lo revisa, pero la multa corresponde al INM conforme a la Ley de Migración."
+    },
+    {
+     "id": "b6",
+     "q": "No trabaja ningún menor de 15 años",
+     "d": "Verifique edades con acta de nacimiento o CURP.",
+     "f": "Art. 23 LFT",
+     "s": "995B",
+     "pw": false
+    },
+    {
+     "id": "b7",
+     "q": "Menores de 15 a 17 años con certificado médico, registro y jornada permitida",
+     "d": "Sin horas extra, domingos ni festivos; sin labores peligrosas; máximo 6 horas si son menores de 16; 18 días de vacaciones.",
+     "f": "Arts. 174 a 180 LFT",
+     "s": "995",
+     "pw": false
+    },
+    {
+     "id": "b8",
+     "q": "Si contrata servicios especializados: contrato por escrito y REPSE vigente del proveedor",
+     "d": "Contrato, registro REPSE vigente y altas en el IMSS del personal del proveedor.",
+     "f": "Arts. 13, 14 y 15 LFT; art. 15-A LSS",
+     "s": "1004-C",
+     "pw": false
+    }
+   ]
+  },
+  {
+   "id": "jornada",
+   "title": "Jornada, descansos y asistencia",
+   "items": [
+    {
+     "id": "c1",
+     "q": "Jornada ordinaria de máximo 48 horas a la semana en 2026 (46 en 2027)",
+     "d": "Diaria: 8 horas la diurna, 7 la nocturna y 7.5 la mixta. Se puede redistribuir por acuerdo con los trabajadores.",
+     "f": "Arts. 58, 59 y 61 LFT; transitorio segundo, DOF 01-05-2026",
+     "s": "994-I",
+     "pw": true
+    },
+    {
+     "id": "c2",
+     "q": "Turnos bien clasificados: si un turno tiene 3.5 horas o más entre las 20:00 y las 6:00, es nocturno",
+     "d": "Un turno de 15:30 a 23:45 tiene 3 h 45 min de horario nocturno: la ley lo trata como nocturno, con máximo de 7 horas diarias.",
+     "f": "Arts. 60 y 61 LFT",
+     "s": "994-I",
+     "pw": true
+    },
+    {
+     "id": "c3",
+     "q": "Descanso de al menos 30 minutos en jornada continua",
+     "d": "Si el trabajador no puede salir de la planta durante el descanso, ese tiempo cuenta como jornada.",
+     "f": "Arts. 63 y 64 LFT",
+     "s": "1002",
+     "pw": true
+    },
+    {
+     "id": "c4",
+     "q": "Controles de asistencia o bitácoras de horario de todo el personal del último mes",
+     "d": "Desde 2027 será obligatorio el registro electrónico de entrada y salida, con multa propia (art. 994, fr. IV Bis).",
+     "f": "Art. 804, fr. III; art. 132, fr. XXXIV LFT",
+     "s": "1002",
+     "pw": false,
+     "y27": true
+    },
+    {
+     "id": "c5",
+     "q": "Horas extra dentro del límite y pagadas al doble; las excedentes, al triple",
+     "d": "En 2026: máximo 9 horas extra por semana, hasta 4 horas al día y en no más de 4 días. Jornada más horas extra: nunca más de 12 horas al día.",
+     "f": "Arts. 66 y 68 LFT; transitorio cuarto, DOF 01-05-2026",
+     "s": "1002",
+     "pw": true
+    },
+    {
+     "id": "c6",
+     "q": "Un día de descanso con goce de salario por cada seis días trabajados",
+     "d": "Rol de descansos y nóminas que lo acrediten.",
+     "f": "Art. 69 LFT",
+     "s": "994-I",
+     "pw": true
+    },
+    {
+     "id": "c7",
+     "q": "Prima dominical de al menos 25% a quien trabaja en domingo",
+     "d": "Recibos timbrados o firmados del último mes.",
+     "f": "Arts. 71 y 804, fr. IV LFT",
+     "s": "1002",
+     "pw": true
+    },
+    {
+     "id": "c8",
+     "q": "Días de descanso obligatorio trabajados, pagados con salario doble adicional",
+     "d": "1 ene, 1er lunes de feb, 3er lunes de mar, 1 may, 16 sep, 3er lunes de nov, 25 dic. Recibos de cada festivo laborado.",
+     "f": "Arts. 74 y 75 LFT",
+     "s": "1002",
+     "pw": true
+    }
+   ]
+  },
+  {
+   "id": "salario",
+   "title": "Salario y prestaciones",
+   "items": [
+    {
+     "id": "d1",
+     "q": "Nóminas o recibos timbrados con dispersión bancaria del último mes",
+     "d": "Pago semanal a quien hace trabajo material y quincenal a los demás.",
+     "f": "Arts. 82 a 89, 101 y 804, fr. II LFT",
+     "s": "1002",
+     "pw": true
+    },
+    {
+     "id": "d2",
+     "q": "Nadie gana menos del salario mínimo: $440.87 diarios en Baja California (2026)",
+     "d": "Zona Libre de la Frontera Norte. Revise también puestos de medio tiempo y de nuevo ingreso.",
+     "f": "Art. 90 LFT",
+     "s": "1002",
+     "pw": true
+    },
+    {
+     "id": "d3",
+     "q": "Vacaciones según antigüedad: 12 días el primer año, con al menos 12 continuos",
+     "d": "Solicitudes firmadas, recibos y la constancia anual de antigüedad y vacaciones.",
+     "f": "Arts. 76 a 81 LFT",
+     "s": "994-I",
+     "pw": true
+    },
+    {
+     "id": "d4",
+     "q": "Prima vacacional de al menos 25%",
+     "d": "Recibos timbrados o firmados del periodo más reciente de cada trabajador.",
+     "f": "Arts. 80 y 804, fr. IV LFT",
+     "s": "1002",
+     "pw": true
+    },
+    {
+     "id": "d5",
+     "q": "Aguinaldo de al menos 15 días, pagado antes del 20 de diciembre",
+     "d": "Recibos del aguinaldo 2025, firmados o timbrados con dispersión bancaria.",
+     "f": "Art. 87 LFT",
+     "s": "1002",
+     "pw": true
+    },
+    {
+     "id": "d6",
+     "q": "Reparto de utilidades (PTU) del ejercicio 2025 completo",
+     "d": "Declaración anual, entrega de copia a los trabajadores, acta de la comisión mixta, proyecto de reparto y recibos de pago.",
+     "f": "Arts. 117 a 131 LFT",
+     "s": "994-II",
+     "pw": true
+    },
+    {
+     "id": "d7",
+     "q": "Constancias de días trabajados y salario, y de servicios al separarse, cuando se solicitan",
+     "d": "Cada 15 días a petición del trabajador y en 3 días al terminar la relación.",
+     "f": "Art. 132, frs. VII y VIII LFT",
+     "s": "994-III",
+     "pw": false
+    }
+   ]
+  },
+  {
+   "id": "internos",
+   "title": "Reglamento, comisiones y políticas",
+   "items": [
+    {
+     "id": "e1",
+     "q": "Reglamento Interior de Trabajo depositado y acta de su comisión mixta",
+     "d": "Acuse de depósito ante la autoridad y acta de integración de la comisión.",
+     "f": "Arts. 132, fr. XXVIII, 422 a 425 LFT",
+     "s": "1002",
+     "pw": false
+    },
+    {
+     "id": "e2",
+     "q": "Cuadro general de antigüedades vigente, publicado y con acta de su comisión",
+     "d": "Publicado en un lugar visible del centro de trabajo.",
+     "f": "Arts. 132, fr. XXVIII y 158 LFT",
+     "s": "1002",
+     "pw": false
+    },
+    {
+     "id": "e3",
+     "q": "Protocolo contra discriminación, violencia y acoso, trabajo forzoso e infantil, acordado con los trabajadores",
+     "d": "Documento firmado, evidencia de difusión y canal de denuncia. Tolerar el acoso tiene multa propia de 250 a 5,000 UMA (art. 994, fr. VI).",
+     "f": "Art. 132, fr. XXXI LFT",
+     "s": "1002",
+     "pw": false
+    },
+    {
+     "id": "e4",
+     "q": "Actividades culturales y deportivas para el personal",
+     "d": "Calendario, fotos o comprobantes de equipo y apoyos.",
+     "f": "Art. 132, fr. XXV LFT",
+     "s": "1002",
+     "pw": false
+    },
+    {
+     "id": "e5",
+     "q": "Beca de estudios: 1 becario con 100 a 999 trabajadores; 3 con 1,000 o más",
+     "d": "Acta de designación del becario y comprobantes de pago.",
+     "f": "Art. 132, fr. XIV LFT",
+     "s": "994-III",
+     "pw": false
+    },
+    {
+     "id": "e6",
+     "q": "Si hay teletrabajo: política escrita, listado de personas y equipo entregado",
+     "d": "Incluya derecho a la desconexión y registro de insumos.",
+     "f": "Arts. 330-A a 330-K LFT",
+     "s": "1002",
+     "pw": false
+    }
+   ]
+  },
+  {
+   "id": "protegidos",
+   "title": "Grupos con protección especial",
+   "items": [
+    {
+     "id": "f1",
+     "q": "Trabajadoras embarazadas sin labores peligrosas y con incapacidad de 6 semanas antes y 6 después del parto",
+     "d": "Expedientes y movimientos de puesto.",
+     "f": "Arts. 166 y 170 LFT",
+     "s": "995",
+     "pw": false
+    },
+    {
+     "id": "f2",
+     "q": "Lactancia: dos descansos de 30 minutos al día o una hora menos de jornada, en lugar adecuado e higiénico",
+     "d": "Hasta por seis meses. Sala de lactancia o acuerdo de reducción de jornada.",
+     "f": "Art. 170, fr. IV LFT",
+     "s": "995",
+     "pw": false
+    },
+    {
+     "id": "f3",
+     "q": "No se pide certificado de no embarazo para contratar, ascender o permanecer",
+     "d": "Revise formatos de reclutamiento y exámenes médicos.",
+     "f": "Art. 133, fr. XIV LFT",
+     "s": "995",
+     "pw": false
+    },
+    {
+     "id": "f4",
+     "q": "Permiso de paternidad de 5 días laborables con goce de sueldo",
+     "d": "Solicitudes y nóminas que lo acrediten.",
+     "f": "Art. 132, fr. XXVII Bis LFT",
+     "s": "1002",
+     "pw": false
+    },
+    {
+     "id": "f5",
+     "q": "Instalaciones accesibles para personas con discapacidad (más de 50 trabajadores)",
+     "d": "Rampas, sanitarios y accesos.",
+     "f": "Art. 132, fr. XVI Bis LFT",
+     "s": "1002",
+     "pw": false
+    }
+   ]
+  },
+  {
+   "id": "seguridad",
+   "title": "Seguridad, salud y capacitación",
+   "fed": true,
+   "items": [
+    {
+     "id": "g1",
+     "q": "Botiquín y personal capacitado en primeros auxilios",
+     "d": "Brigada de primeros auxilios con constancias de capacitación.",
+     "f": "Arts. 132, fr. XVII y 504, fr. I LFT",
+     "s": "994-V",
+     "pw": false
+    },
+    {
+     "id": "g2",
+     "q": "Más de 100 trabajadores: enfermería bajo un médico. Más de 300: hospital o convenio con sanatorio acordado con los trabajadores",
+     "d": "Horario del médico, convenio con la clínica y acta del acuerdo con los trabajadores.",
+     "f": "Art. 504, frs. II a IV LFT",
+     "s": "994-V",
+     "pw": false
+    },
+    {
+     "id": "g3",
+     "q": "Aviso de accidentes de trabajo dentro de 72 horas, y de inmediato en caso de muerte",
+     "d": "Acuses ante la STPS, el inspector y el Tribunal, además del aviso al IMSS (ST-7).",
+     "f": "Art. 504, frs. V y VI LFT",
+     "s": "1002",
+     "pw": false
+    },
+    {
+     "id": "g4",
+     "q": "Capacitación y adiestramiento del personal",
+     "d": "Planes, programas y constancias de habilidades laborales.",
+     "f": "Art. 132, fr. XV LFT",
+     "s": "994-IV",
+     "pw": false
+    }
+   ]
+  }
+ ]
+}
