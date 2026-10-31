@@ -6,7 +6,7 @@ import { pesos } from "@/lib/avance";
 
 export const metadata = {
   title: "Repositorios | LaborTech",
-  description: "Herramientas laborales gratuitas y paquetes en preparación, publicados en GitHub."
+  description: "Herramientas laborales gratuitas en GitHub y cinco proyectos de demostración."
 };
 
 export default async function Repositorios({ searchParams }: { searchParams: Promise<{ pago?: string }> }) {
@@ -41,7 +41,7 @@ export default async function Repositorios({ searchParams }: { searchParams: Pro
         <section aria-labelledby="venta">
           <h2 id="venta">A la venta</h2>
           <p className="nota-legal repos-nota">
-            Estos repositorios privados están en preparación. El pago funciona solo en modo de prueba de Stripe: no hay cobros reales ni entrega de archivos.
+            Proyectos ficticios, creados para mostrar el flujo de venta en el Hackathon de Lawgic. Ni los proyectos ni sus precios son reales: el pago funciona solo en modo de prueba de Stripe, sin cobros ni entrega de archivos.
           </p>
           <ul className="repos-venta">
             {A_LA_VENTA.map((r) => (
@@ -49,7 +49,7 @@ export default async function Repositorios({ searchParams }: { searchParams: Pro
                 <div>
                   <h3>{r.nombre}</h3>
                   <p>{r.incluye}</p>
-                  <span className="fund">En preparación</span>
+                  <span className="fund">Proyecto de demostración. {r.tecnologia}.</span>
                 </div>
                 <div className="repo-precio">
                   {r.precio !== null && <span className="lcd">{pesos(r.precio)}</span>}

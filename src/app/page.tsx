@@ -54,7 +54,7 @@ export default function Portada() {
         <article className="modulo">
           <div className="icono gira"><div className="chip">{"{ }"}</div></div>
           <div>
-            <h2>2 repositorios gratuitos y 5 en preparación</h2>
+            <h2>2 repositorios gratuitos y 5 proyectos de demostración</h2>
             <p>Use la calculadora laboral y el autodiagnóstico sin costo, y revise el código en GitHub.</p>
             <div className="acciones" style={{ marginTop: 14 }}>
               <Link href="/calculadora" className="btn lleno">Abrir la calculadora</Link>
