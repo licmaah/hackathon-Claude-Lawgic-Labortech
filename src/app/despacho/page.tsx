@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { Marca } from "@/componentes/Marca";
 import { avanceInicial, pesos, resumen } from "@/lib/avance";
 import { clienteServidor } from "@/lib/supabase/servidor";
 
@@ -28,12 +29,12 @@ export default async function Despacho() {
     <>
       <div className="barra">
         <div className="barra-in">
-          <Link href="/" className="marca">LaborTech</Link>
+          <Marca />
           <div className="barra-der"><Link href="/panel">Mi panel</Link></div>
         </div>
       </div>
       <main className="vista">
-        <h1 style={{ fontSize: 32, color: "var(--verde)" }}>Empresas del despacho</h1>
+        <h1 style={{ fontSize: 32 }}>Empresas del despacho</h1>
         <div className="foja tabla-env">
           {filas.length === 0 ? (
             <p>Aún no hay empresas registradas. Comparta el enlace de registro con sus clientes.</p>

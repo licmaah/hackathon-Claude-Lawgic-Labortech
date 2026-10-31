@@ -109,6 +109,14 @@ export const pesos = (n: number) =>
 
 export const numero = (n: number) => new Intl.NumberFormat("es-MX").format(n);
 
+const MESES = ["ENE", "FEB", "MAR", "ABR", "MAY", "JUN", "JUL", "AGO", "SEP", "OCT", "NOV", "DIC"];
+
+/** Fecha como la muestra el reloj del logo: NOV 4-26. */
+export const fechaLcd = (iso: string) => {
+  const [a, m, d] = iso.split("-").map(Number);
+  return `${MESES[m - 1]} ${d}-${String(a).slice(2)}`;
+};
+
 export const fechaLarga = (iso: string) => {
   const [a, m, d] = iso.split("-").map(Number);
   return new Date(a, m - 1, d).toLocaleDateString("es-MX", {

@@ -1,10 +1,18 @@
 import type { Metadata } from "next";
-import { Fraunces, Inter, Kalam } from "next/font/google";
+import { Archivo_Black, IBM_Plex_Sans, Prata } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 
-const fraunces = Fraunces({ subsets: ["latin"], variable: "--f-titulo", display: "swap" });
-const inter = Inter({ subsets: ["latin"], variable: "--f-texto", display: "swap" });
-const kalam = Kalam({ subsets: ["latin"], weight: ["400", "700"], variable: "--f-pluma", display: "swap" });
+const lcd = localFont({
+  src: "../../node_modules/dseg/fonts/DSEG14-Classic/DSEG14Classic-Bold.woff2",
+  weight: "700",
+  variable: "--f-lcd",
+  display: "swap"
+});
+
+const prata = Prata({ subsets: ["latin"], weight: "400", variable: "--f-titulo", display: "swap" });
+const plex = IBM_Plex_Sans({ subsets: ["latin"], weight: ["300", "400", "500", "600", "700"], variable: "--f-texto", display: "swap" });
+const archivo = Archivo_Black({ subsets: ["latin"], weight: "400", variable: "--f-marca", display: "swap" });
 
 export const metadata: Metadata = {
   title: "LaborTech Inspección",
@@ -14,7 +22,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es-MX" className={`${fraunces.variable} ${inter.variable} ${kalam.variable}`}>
+    <html lang="es-MX" className={`${prata.variable} ${plex.variable} ${archivo.variable} ${lcd.variable}`}>
       <body>{children}</body>
     </html>
   );

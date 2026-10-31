@@ -1,11 +1,11 @@
-import Link from "next/link";
+import { Marca } from "@/componentes/Marca";
 
 export const metadata = { title: "Aviso de privacidad | LaborTech Inspección" };
 
 export default function Privacidad() {
   return (
     <main className="acceso" style={{ maxWidth: 720 }}>
-      <Link href="/" className="marca">LaborTech</Link>
+      <Marca />
       <article className="foja">
         <h1>Aviso de privacidad</h1>
         <p className="aviso">

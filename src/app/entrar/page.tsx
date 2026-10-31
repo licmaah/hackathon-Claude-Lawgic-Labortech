@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
+import { Marca } from "@/componentes/Marca";
 import { clienteNavegador } from "@/lib/supabase/navegador";
 
 function Formulario() {
@@ -42,8 +43,9 @@ function Formulario() {
   }
 
   return (
+    <div className="acceso-fondo">
     <main className="acceso">
-      <Link href="/" className="marca">LaborTech</Link>
+      <Marca />
       <form className="foja" onSubmit={enviar}>
         <h1>{crear ? "Crear cuenta de empresa" : "Entrar a su cuenta"}</h1>
         {fallo && <p className="aviso mal" role="alert">{fallo}</p>}
@@ -76,6 +78,7 @@ function Formulario() {
         </button>
       </form>
     </main>
+    </div>
   );
 }
 

@@ -13,6 +13,7 @@ import {
   afectados,
   avanceInicial,
   fechaLarga,
+  fechaLcd,
   multaDe,
   numero,
   pesos,
@@ -26,6 +27,8 @@ import {
 import { plazoHabil } from "@/lib/reglas";
 import { clienteNavegador } from "@/lib/supabase/navegador";
 import { AvisoLegal } from "./AvisoLegal";
+import { ControlMarca } from "./ControlMarca";
+import { Marca as Logo } from "./Marca";
 
 type Props =
   | { modo: "demo" }
@@ -110,7 +113,7 @@ export function Panel(props: Props) {
     <>
       <div className="barra">
         <div className="barra-in">
-          <Link href="/" className="marca">LaborTech</Link>
+          <Logo />
           <div className="barra-der">
             {cuenta ? (
               <>
@@ -130,6 +133,7 @@ export function Panel(props: Props) {
         </div>
       </div>
 
+      <div className="ficha-fondo">
       <section className="ficha">
         <p className="ficha-texto">
           En el centro de trabajo de{" "}
@@ -168,6 +172,7 @@ export function Panel(props: Props) {
           </button>
         ))}
       </div>
+      </div>
 
       <main className="vista">
         {pestana === "resumen" && <Resumen avance={avance} razon={razon} ir={setPestana} />}
@@ -181,16 +186,26 @@ export function Panel(props: Props) {
   );
 }
 
-function ControlMarca({ nombre, valor, alCambiar, etiqueta }: { nombre: string; valor?: Marca; alCambiar: (m: Marca) => void; etiqueta: string }) {
+function MapaActa({ avance }: { avance: Avance }) {
   return (
-    <div className="marca-ctrl" role="radiogroup" aria-label={etiqueta}>
-      {([["si", "SÍ", "Sí muestra"], ["nm", "N/M", "No mostrado"], ["na", "N/A", "No aplica"]] as const).map(([v, t, largo]) => (
-        <span key={v}>
-          <input type="radio" id={`${nombre}-${v}`} name={nombre} value={v} checked={valor === v} onChange={() => alCambiar(v)} />
-          <label htmlFor={`${nombre}-${v}`} title={largo} aria-label={largo}>{t}</label>
-        </span>
-      ))}
-    </div>
+    <>
+      <div className="mapa" aria-hidden="true">
+        {SECCIONES.map((s) => (
+          <div className="mapa-sec" key={s.id}>
+            <span>{s.title}</span>
+            <div className="mapa-celdas">
+              {s.items.map((p) => <i key={p.id} title={p.q} className={`celda ${avance.puntos[p.id]?.st ?? ""}`} />)}
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="leyenda" aria-hidden="true">
+        <span><i className="celda si" /> SÍ</span>
+        <span><i className="celda nm" /> N/M</span>
+        <span><i className="celda na" /> N/A</span>
+        <span><i className="celda" style={{ outline: "1px solid var(--gris)" }} /> Sin revisar</span>
+      </div>
+    </>
   );
 }
 
@@ -237,7 +252,8 @@ function Resumen({ avance, razon, ir }: { avance: Avance; razon: string; ir: (p:
           Marque SÍ si puede mostrar el documento en este momento, N/M si no podría y N/A si no aplica a su empresa.
           Si ya recibió una orden, un acta o un emplazamiento, capture primero su fecha para calcular el plazo.
         </p>
-        <div className="acciones" style={{ marginTop: 4 }}>
+        <MapaActa avance={avance} />
+        <div className="acciones sobre-noche" style={{ marginTop: 4 }}>
           <button className="btn lleno" onClick={() => ir("puntos")}>Marcar los puntos del acta</button>
           <button className="btn" onClick={() => ir("apercibimientos")}>Capturar un plazo</button>
         </div>
@@ -248,19 +264,19 @@ function Resumen({ avance, razon, ir }: { avance: Avance; razon: string; ir: (p:
   return (
     <>
       <div className="foja cuenta">
-        <h2>
-          Si el inspector llegara hoy, el acta asentaría{" "}
-          <span className={r.nm ? "rojo" : ""}>{r.nm} {r.nm === 1 ? "punto" : "puntos"} como N/M</span>
-        </h2>
-        <p>
-          Multa posible: <b>{r.nm ? `${pesos(r.min)} a ${pesos(r.max)}` : "$0"}</b>. La autoridad fija el monto dentro de cada rango.
-        </p>
+        <h2>Si el inspector llegara hoy, el acta asentaría {r.nm} {r.nm === 1 ? "punto" : "puntos"} como N/M</h2>
+        <MapaActa avance={avance} />
+        <div className="demo-montos">
+          <span className="lcd">{pesos(r.min)}</span>
+          {r.nm > 0 && <>a <span className="lcd">{pesos(r.max)}</span></>}
+        </div>
+        <p>Multa posible. La autoridad fija el monto dentro de cada rango.</p>
         <div className="cifras">
           <span><b>{r.revisados} de {r.total}</b> puntos revisados</span>
           <span><b>{r.pct === null ? "Sin datos" : `${r.pct}%`}</b> de cumplimiento en lo revisado</span>
           <span><b>{r.reqRevisados} de {r.reqTotal}</b> requisitos de documentos</span>
         </div>
-        <div className="acciones" style={{ marginTop: 4 }}>
+        <div className="acciones sobre-noche" style={{ marginTop: 4 }}>
           <button className="btn lleno" onClick={copiar}>Copiar lista de pendientes</button>
           <span role="status" style={{ alignSelf: "center", fontSize: 14 }}>{copiado}</span>
         </div>
@@ -273,7 +289,10 @@ function Resumen({ avance, razon, ir }: { avance: Avance; razon: string; ir: (p:
             {plazos.map(({ ap, limite }) => (
               <li key={ap.id} style={{ gridTemplateColumns: "minmax(0,1fr) auto" }}>
                 <span>{ap.titulo}<span className="fund">{ap.fundamento}</span></span>
-                <span className="dinero" style={{ color: "var(--plazo)" }}>Vence {fechaLarga(limite)}</span>
+                <span title={`Vence ${fechaLarga(limite)}`}>
+                  <span className="sr">Vence {fechaLarga(limite)}</span>
+                  <span className="lcd chica" aria-hidden="true">{fechaLcd(limite)}</span>
+                </span>
               </li>
             ))}
           </ul>
@@ -288,7 +307,7 @@ function Resumen({ avance, razon, ir }: { avance: Avance; razon: string; ir: (p:
               const m = multaDe(p, avance);
               return (
                 <li key={p.id}>
-                  <span className="asiento nm" style={{ justifySelf: "start" }}>N/M</span>
+                  <span className="chip-marca nm" style={{ justifySelf: "start" }}>N/M</span>
                   <span>{p.q}<span className="fund">{p.f}</span></span>
                   <span className="dinero">{m ? `${pesos(m.min)} a ${pesos(m.max)}` : "Sin multa de la LFT"}</span>
                 </li>
@@ -377,7 +396,9 @@ function FilaPunto({ p, avance, cambiar }: { p: Punto; avance: Avance; cambiar: 
         <div className="obs">
           {m ? (
             <>
-              <span className="monto">{pesos(m.min)} a {pesos(m.max)}</span>
+              <span className="monto">
+                <span className="lcd chica">{pesos(m.min)}</span> a <span className="lcd chica">{pesos(m.max)}</span>
+              </span>
               <span>{m.s.what}.{m.s.jail ? " Puede haber pena de prisión." : ""}</span>
               <label>
                 Trabajadores afectados
@@ -502,6 +523,7 @@ function RevisionIA({ docId, muestra, resultado, demo, cambiar }: { docId: strin
 
   return (
     <section className="ia">
+      {enviando && <div className="ia-barrido" aria-hidden="true" />}
       <h3>Revisar el documento con IA</h3>
       {demo ? (
         <p style={{ fontSize: 15 }}>
@@ -543,7 +565,7 @@ function RevisionIA({ docId, muestra, resultado, demo, cambiar }: { docId: strin
               <ul>{resultado.observaciones.map((o) => <li key={o}>{o}</li>)}</ul>
             </>
           )}
-          <div className="ia-fila">
+          <div className="ia-fila sobre-noche">
             <button className="btn" onClick={aplicar}>Aplicar a mi lista</button>
             <small>Marca SÍ o N/M donde la IA encontró una respuesta. Lo que no se pueda saber queda como está.</small>
           </div>
@@ -608,10 +630,13 @@ function Apercibimientos({ avance, cambiar }: { avance: Avance; cambiar: Cambiar
               </div>
               {ap.plazo && e.estado && e.estado !== "sin" && (
                 limite ? (
-                  <p className={`limite ${e.estado === "atendido" ? "listo" : vencido ? "vencido" : ""}`}>
-                    {e.estado === "atendido" ? "Atendido. El plazo vencía el " : vencido ? "El plazo venció el " : "El plazo vence el "}
-                    {fechaLarga(limite)}. {ap.plazo.nota} Descuenta sábados, domingos y descansos del art. 74 LFT; la autoridad puede declarar otros días inhábiles.
-                  </p>
+                  <div className={`limite ${e.estado === "atendido" ? "listo" : vencido ? "vencido" : ""}`}>
+                    <span className="lcd" aria-hidden="true">{fechaLcd(limite)}</span>
+                    <p>
+                      {e.estado === "atendido" ? "Atendido. El plazo vencía el " : vencido ? "El plazo venció el " : "El plazo vence el "}
+                      {fechaLarga(limite)}. {ap.plazo.nota} Descuenta sábados, domingos y descansos del art. 74 LFT; la autoridad puede declarar otros días inhábiles.
+                    </p>
+                  </div>
                 ) : (
                   <p className="fund">Capture la fecha para calcular el plazo.</p>
                 )
