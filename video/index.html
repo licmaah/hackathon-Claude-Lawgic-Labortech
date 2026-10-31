@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="es-MX">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>LaborTech Inspección</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      @font-face { font-family: "Archivo Black"; src: url("assets/fuentes/archivo-black-latin-400-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Prata"; src: url("assets/fuentes/prata-latin-400-normal.woff2") format("woff2"); }
+      @font-face { font-family: "IBM Plex Sans"; font-weight: 500; src: url("assets/fuentes/ibm-plex-sans-latin-500-normal.woff2") format("woff2"); }
+      @font-face { font-family: "IBM Plex Sans"; font-weight: 600; src: url("assets/fuentes/ibm-plex-sans-latin-600-normal.woff2") format("woff2"); }
+      @font-face { font-family: "DSEG14"; src: url("assets/fuentes/DSEG14Classic-Bold.woff2") format("woff2"); }
+      :root { --noche: #000000; --turquesa: #14b8a6; --oscuro: #0b6b60; --lcd: #e6e7e8; --coral: #e28a7c; --papel: #f4f5f5; }
+      * { box-sizing: border-box; }
+      body { margin: 0; background: #000; font-family: "IBM Plex Sans", sans-serif; font-weight: 500; }
+      #root { position: relative; width: 100%; height: 100%; overflow: hidden; background: #000; }
+      .clip { position: absolute; inset: 0; overflow: hidden; perspective: 1500px; }
+      .teal { background: var(--turquesa); color: #000; }
+      .negro { background: #000; color: #fff; }
+      .papel { background: var(--papel); color: #000; }
+      .abs { position: absolute; }
+      .palabra { left: 0; right: 0; top: 96px; margin: 0; text-align: center; white-space: nowrap; font: 400 300px/1 "Archivo Black", sans-serif; letter-spacing: -10px; }
+      .reloj { display: block; height: 840px; width: auto; filter: drop-shadow(14px 16px 0 var(--oscuro)); }
+      .cara { border: 4px solid #000; box-shadow: 14px 16px 0 #000; }
+      .acta { width: 480px; background: #fff; border-radius: 16px; overflow: hidden; color: #000; }
+      .acta-cab { background: #000; color: #fff; padding: 20px 26px; font: 400 36px/1.1 "Prata", serif; }
+      .fila { display: flex; justify-content: space-between; align-items: center; padding: 16px 26px; border-bottom: 2px solid var(--lcd); font-size: 28px; }
+      .marca { min-width: 86px; padding: 4px 10px; text-align: center; font: 400 28px/1.2 "Archivo Black", sans-serif; border-radius: 4px; background: #7cdecf; }
+      .marca.nm { background: var(--coral); }
+      .barrido { left: 0; right: 0; top: 0; height: 110px; background: linear-gradient(180deg, transparent, rgba(20, 184, 166, 0.35) 88%, var(--turquesa) 96%, transparent); }
+      .cred { width: 360px; padding: 20px; display: flex; gap: 18px; background: var(--lcd); border-radius: 14px; }
+      .foto { width: 96px; height: 128px; flex: none; border-radius: 6px; background: radial-gradient(circle at 50% 36%, #a9a9ad 22%, transparent 23%), radial-gradient(ellipse at 50% 100%, #a9a9ad 42%, transparent 43%), #000; }
+      .cred b { display: block; font: 400 28px/1.15 "Prata", serif; }
+      .cred span { display: block; margin-top: 8px; font-size: 28px; line-height: 1.15; }
+      .sello { width: 170px; height: 170px; display: grid; place-items: center; border-radius: 50%; background: #fff; font: 400 44px/1 "Archivo Black", sans-serif; }
+      .chip { width: 130px; height: 130px; display: grid; place-items: center; border-radius: 16px; background: #000; color: #fff; font: 400 46px/1 "Archivo Black", sans-serif; box-shadow: 12px 12px 0 var(--oscuro); }
+      .lcd { display: inline-block; padding: 18px 30px 14px; white-space: nowrap; border: 6px solid var(--turquesa); border-radius: 22px; background: var(--lcd); color: #000; font: 400 96px/1.1 "DSEG14", monospace; }
+      .titulo { margin: 0; font: 400 84px/1.1 "Prata", serif; }
+      .numero { margin: 0; font: 400 240px/0.95 "Archivo Black", sans-serif; letter-spacing: -8px; }
+      .sub { margin: 0; font-size: 42px; line-height: 1.25; font-weight: 600; }
+      .pantalla { width: 1180px; border: 5px solid #000; border-radius: 14px; box-shadow: 18px 20px 0 #000; display: block; }
+      .celdas { display: grid; grid-template-columns: repeat(20, 40px); gap: 8px; }
+      .celda { width: 40px; height: 40px; border-radius: 6px; background: var(--coral); }
+      .etiqueta { padding: 14px 24px; border-radius: 10px; font-size: 36px; font-weight: 600; color: #000; }
+      #cortina { position: absolute; inset: 0; background: #000; z-index: 50; pointer-events: none; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-width="1920" data-height="1080" data-duration="34.5">
+      <audio id="voz" src="voz/narracion.wav" data-start="0" data-duration="34.5" data-track-index="9"></audio>
+
+      <section id="a" class="clip teal" data-start="0" data-duration="4.5" data-track-index="1">
+        <p id="a-palabra" class="abs palabra">Inspección</p>
+        <div id="a-cred" class="abs" style="left: 90px; top: 500px"><div class="cred cara"><div class="foto"></div><div><b>Inspector del trabajo</b><span>Credencial y orden por escrito</span></div></div></div>
+        <img id="a-reloj" class="abs reloj" src="assets/logo-labortech-reloj.png" alt="" style="left: 700px; top: 110px" />
+        <div id="a-acta" class="abs" style="left: 1180px; top: 390px">
+          <div class="acta cara" style="position: relative">
+            <div class="acta-cab">Acta de inspección</div>
+            <div class="fila"><span>Contrato individual</span><span id="m1" class="marca nm">N/M</span></div>
+            <div class="fila"><span>Reglamento interior</span><span id="m2" class="marca">SÍ</span></div>
+            <div class="fila"><span>Aguinaldo</span><span id="m3" class="marca nm">N/M</span></div>
+            <div class="fila"><span>Reparto de utilidades</span><span id="m4" class="marca nm">N/M</span></div>
+            <div id="a-barrido" class="abs barrido"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="b" class="clip negro" data-start="4.5" data-duration="3.45" data-track-index="1">
+        <div class="abs" style="left: 120px; top: 150px; width: 1680px; display: grid; gap: 54px; justify-items: start">
+          <p class="sub" style="font-size: 50px">Contrato no mostrado, con 100 trabajadores afectados</p>
+          <div id="b-lcd" class="lcd" style="font-size: 124px">$0</div>
+          <div id="b-celdas" class="celdas"></div>
+          <p class="sub" style="font-size: 32px; font-weight: 500; color: #d1d5db">Escenario máximo del art. 1002 LFT, con UMA de $117.31. La autoridad fija el monto.</p>
+        </div>
+      </section>
+
+      <section id="c" class="clip teal" data-start="7.95" data-duration="3.45" data-track-index="1">
+        <div id="c-texto" class="abs" style="left: 90px; top: 340px; width: 560px; display: grid; gap: 24px; justify-items: start">
+          <img src="assets/logo-labortech-reloj.png" alt="" style="height: 170px; width: auto" />
+          <h1 class="titulo" style="font-size: 76px">LaborTech Inspección</h1>
+        </div>
+        <img id="c-pantalla" class="abs pantalla" src="assets/pantallas/resumen.png" alt="" style="left: 680px; top: 196px" />
+      </section>
+
+      <section id="d" class="clip papel" data-start="11.4" data-duration="4.4" data-track-index="1">
+        <div id="d-texto" class="abs" style="left: 80px; top: 300px; width: 560px; display: grid; gap: 10px">
+          <p class="numero">43</p>
+          <p class="sub">puntos del acta, con artículo y multa posible</p>
+        </div>
+        <img id="d-pantalla" class="abs pantalla" src="assets/pantallas/puntos.png" alt="" style="left: 670px; top: 196px" />
+      </section>
+
+      <section id="e" class="clip negro" data-start="15.8" data-duration="4.45" data-track-index="1">
+        <div id="e-texto" class="abs" style="left: 80px; top: 170px; width: 560px; display: grid; gap: 10px">
+          <p class="numero" style="color: var(--turquesa)">17</p>
+          <p class="sub">documentos, revisados con Claude contra la ley</p>
+        </div>
+        <div id="e-marco" class="abs" style="left: 670px; top: 150px; width: 1180px; overflow: hidden; border-radius: 14px">
+          <img class="pantalla" src="assets/pantallas/documentos.png" alt="" style="box-shadow: none; border-color: var(--turquesa)" />
+          <div id="e-barrido" class="abs barrido" style="height: 150px"></div>
+        </div>
+        <div class="abs" style="left: 80px; top: 800px; width: 1780px; display: flex; gap: 22px">
+          <span id="e1" class="etiqueta" style="background: var(--turquesa)">Consta</span>
+          <span id="e2" class="etiqueta" style="background: var(--coral)">No consta</span>
+          <span id="e3" class="etiqueta" style="background: var(--lcd)">No se puede saber</span>
+        </div>
+      </section>
+
+      <section id="f" class="clip teal" data-start="20.25" data-duration="3.3" data-track-index="1">
+        <div id="f-texto" class="abs" style="left: 80px; top: 170px; width: 560px; display: grid; gap: 10px">
+          <p class="numero">9</p>
+          <p class="sub">etapas, con apercibimientos y plazos</p>
+        </div>
+        <img id="f-pantalla" class="abs pantalla" src="assets/pantallas/apercibimientos.png" alt="" style="left: 670px; top: 196px" />
+        <div id="f-lcd" class="abs lcd" style="left: 80px; top: 720px; font-size: 76px; border-color: #000">NOV 4-26</div>
+      </section>
+
+      <section id="g" class="clip papel" data-start="23.55" data-duration="2.8" data-track-index="1">
+        <img id="g-pantalla" class="abs pantalla" src="assets/pantallas/calculadora.png" alt="" style="left: 670px; top: 196px" />
+        <div id="g-texto" class="abs" style="left: 80px; top: 300px; width: 560px; display: grid; gap: 26px; justify-items: start">
+          <h2 class="titulo" style="font-size: 72px">Calculadora laboral</h2>
+          <div id="g-lcd" class="lcd" style="font-size: 72px">GRATIS</div>
+        </div>
+      </section>
+
+      <section id="h" class="clip negro" data-start="26.35" data-duration="2.55" data-track-index="1">
+        <div class="abs" style="left: 140px; top: 340px; width: 1640px; display: grid; gap: 30px">
+          <h2 id="h1" class="titulo" style="font-size: 130px">Claude prepara.</h2>
+          <h2 id="h2" class="titulo" style="font-size: 130px; color: var(--turquesa)">Su abogado confirma.</h2>
+        </div>
+      </section>
+
+      <section id="i" class="clip teal" data-start="28.9" data-duration="5.6" data-track-index="1">
+        <p id="i-palabra" class="abs palabra" style="top: 70px">Inspección</p>
+        <img id="i-reloj" class="abs reloj" src="assets/logo-labortech-reloj.png" alt="" style="left: 1320px; top: 150px; height: 860px" />
+        <div class="abs" style="left: 100px; top: 480px; width: 1160px; display: grid; gap: 28px">
+          <h2 id="i-t" class="titulo" style="font-size: 76px">Revise su empresa antes de que la revise el inspector</h2>
+          <p id="i-s" class="sub" style="font-size: 34px">github.com/licmaah/hackathon-Claude-Lawgic-Labortech</p>
+          <p id="i-h" class="sub" style="font-size: 30px">Manuel Alemán, Mini-Hackathon Claude.ia para Abogados, Lawgic</p>
+        </div>
+      </section>
+
+      <div id="cortina" class="clip" data-start="0" data-duration="34.5" data-track-index="5" style="background: transparent; perspective: none">
+        <div id="w" class="abs" style="inset: 0; background: #000"></div>
+      </div>
+    </div>
+
+    <script>
+      const tl = gsap.timeline({ paused: true });
+      const E3 = "power3.out";
+      const entra = (s, t, desde, extra = {}) =>
+        tl.fromTo(s, desde, { x: 0, y: 0, z: 0, scale: 1, opacity: 1, rotationX: 0, rotationY: 0, duration: 0.8, ease: "back.out(1.25)", ...extra }, t);
+
+      // Cortina entre escenas: cubre 0.14 s antes del corte y descubre 0.2 s después.
+      tl.set("#w", { xPercent: -101 }, 0);
+      [4.5, 7.95, 11.4, 15.8, 20.25, 23.55, 26.35, 28.9].forEach((c, i) => {
+        const color = i % 2 ? "#14b8a6" : "#000000";
+        tl.set("#w", { xPercent: -101, background: color }, c - 0.2);
+        tl.to("#w", { xPercent: 0, duration: 0.2, ease: "power2.in" }, c - 0.2);
+        tl.to("#w", { xPercent: 101, duration: 0.24, ease: "power2.out" }, c);
+      });
+
+      // A: la palabra sube y los objetos llegan desde el fondo.
+      tl.fromTo("#a-reloj", { z: -1100, y: 120, opacity: 0, rotationX: 34, rotationY: -28, rotation: -18 }, { z: 0, y: 0, opacity: 1, rotationX: 4, rotationY: 12, rotation: -7, duration: 1, ease: "back.out(1.2)" }, 0.25);
+      tl.fromTo("#a-cred", { z: -900, x: -160, opacity: 0, rotationY: 40, rotation: -24 }, { z: 0, x: 0, opacity: 1, rotationY: 18, rotation: -9, duration: 0.9, ease: "back.out(1.2)" }, 0.5);
+      tl.fromTo("#a-acta", { z: -900, x: 180, opacity: 0, rotationY: -44, rotation: 18 }, { z: 0, x: 0, opacity: 1, rotationY: -14, rotation: 5, duration: 0.9, ease: "back.out(1.2)" }, 0.65);
+      tl.fromTo("#a-barrido", { y: -120 }, { y: 400, duration: 1.7, ease: "none" }, 1.3);
+      ["#m1", "#m2", "#m3", "#m4"].forEach((m, i) => tl.fromTo(m, { opacity: 0, scale: 2.4, rotation: -16 }, { opacity: 1, scale: 1, rotation: 0, duration: 0.3, ease: "back.out(2)" }, 1.45 + i * 0.36));
+      tl.to("#a-reloj", { y: -14, duration: 3, ease: "sine.inOut" }, 1.4);
+
+      // B: la multa corre y se llena una casilla por trabajador.
+      const celdas = document.getElementById("b-celdas");
+      for (let i = 0; i < 100; i++) { const c = document.createElement("i"); c.className = "celda"; celdas.appendChild(c); }
+      const monto = { v: 0 };
+      const pinta = new Intl.NumberFormat("en-US");
+      const lcd = document.getElementById("b-lcd");
+      tl.fromTo(monto, { v: 0 }, { v: 58655000, duration: 2, ease: "power1.in", onUpdate: () => { lcd.textContent = "$" + pinta.format(Math.round(monto.v)); } }, 4.75);
+      tl.fromTo("#b-celdas .celda", { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.14, stagger: 0.02, ease: "back.out(2)" }, 4.75);
+
+      // C a G: cada pantalla entra en 3D.
+      const pantalla = (s, t) => { entra(s, t, { z: -700, x: 420, opacity: 0, rotationY: -34, rotationX: 8, scale: 0.9 }, { rotationY: -6, rotationX: 2 }); };
+      const texto = (s, t) => tl.fromTo(s, { x: -70, opacity: 0 }, { x: 0, opacity: 1, duration: 0.55, ease: E3 }, t);
+      texto("#c-texto", 8.1); pantalla("#c-pantalla", 8.15);
+      texto("#d-texto", 11.55); pantalla("#d-pantalla", 11.6);
+      tl.to("#d-pantalla", { y: -40, duration: 3, ease: "sine.inOut" }, 12.5);
+      texto("#e-texto", 15.95);
+      entra("#e-marco", 16, { z: -700, x: 420, opacity: 0, rotationY: -30, scale: 0.9 }, { rotationY: -4 });
+      tl.fromTo("#e-barrido", { y: -160 }, { y: 760, duration: 1.45, ease: "none", repeat: 1, yoyo: true }, 16.8);
+      ["#e1", "#e2", "#e3"].forEach((s, i) => tl.fromTo(s, { opacity: 0, y: 26, scale: 1.3 }, { opacity: 1, y: 0, scale: 1, duration: 0.3, ease: "back.out(2)" }, 17.3 + i * 0.5));
+      texto("#f-texto", 20.4); pantalla("#f-pantalla", 20.45);
+      tl.fromTo("#f-lcd", { opacity: 0, scale: 1.9, rotation: -8 }, { opacity: 1, scale: 1, rotation: 0, duration: 0.34, ease: "back.out(2)" }, 21.3);
+      texto("#g-texto", 23.7); pantalla("#g-pantalla", 23.75);
+      tl.fromTo("#g-lcd", { opacity: 0, scale: 2, rotation: -10 }, { opacity: 1, scale: 1, rotation: 0, duration: 0.34, ease: "back.out(2)" }, 24.25);
+
+      // H: dos frases, en el orden que importa.
+      tl.fromTo("#h1", { y: 50, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: E3 }, 26.55);
+      tl.fromTo("#h2", { y: 50, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: E3 }, 27.5);
+
+      // I: cierre con el logo.
+      tl.fromTo("#i-palabra", { yPercent: 70, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.6, ease: E3 }, 29.05);
+      tl.fromTo("#i-reloj", { z: -1100, y: 120, opacity: 0, rotationX: 30, rotationY: -30, rotation: 18 }, { z: 0, y: 0, opacity: 1, rotationX: 3, rotationY: -10, rotation: 6, duration: 1, ease: "back.out(1.2)" }, 29.2);
+      tl.fromTo("#i-t", { x: -70, opacity: 0 }, { x: 0, opacity: 1, duration: 0.6, ease: E3 }, 29.5);
+      tl.fromTo("#i-s", { x: -70, opacity: 0 }, { x: 0, opacity: 1, duration: 0.6, ease: E3 }, 30.3);
+      tl.fromTo("#i-h", { x: -70, opacity: 0 }, { x: 0, opacity: 1, duration: 0.6, ease: E3 }, 30.7);
+
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

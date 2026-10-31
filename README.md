@@ -19,6 +19,8 @@ Una empresa en Baja California puede recibir hoy a un inspector de la Secretarí
 
 Pruébelo sin cuenta en `/demo`. La revisión con IA requiere cuenta.
 
+Video de presentación: [`video/labortech-inspeccion.mp4`](video/labortech-inspeccion.mp4), con su fuente en `video/`.
+
 ## Criterio legal del diseño
 
 - **El modelo no calcula ni cita por su cuenta.** Multas y plazos salen de código determinista con pruebas (`src/lib/reglas.ts`). Claude evalúa solo los requisitos de una lista cerrada, y la interfaz aclara que un abogado debe confirmar el resultado.

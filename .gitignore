@@ -7,3 +7,7 @@ next-env.d.ts
 .DS_Store
 .vercel
 .claude/
+
+.hyperframes/
+video/snapshots/
+video/renders/
