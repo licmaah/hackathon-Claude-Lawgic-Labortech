@@ -1,0 +1,716 @@
+<!doctype html><html lang="es-MX"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body>
+<title>Autodiagnóstico de inspección | LaborTech</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Prata&display=swap">
+<style>
+:root{
+  --desk:#F4F5F5;--sheet:#FFFFFF;--rule:#E6E7E8;--type:#000000;--muted:#5E5E63;--pen:#0B6B60;--pen-soft:#DFF5F1;
+  --red:#AD3A26;--red-soft:#FCEFEC;--ok:#0B6B60;--ok-soft:#DFF5F1;--na:#5E5E63;--na-soft:#E6E7E8;--amber:#3F3F46;--amber-soft:#E6E7E8;
+  --f-form:"IBM Plex Sans",system-ui,sans-serif;--f-display:"Prata",Georgia,serif;--f-body:"IBM Plex Sans",system-ui,sans-serif;
+  --f-hand:"IBM Plex Sans",system-ui,sans-serif;--f-mono:"IBM Plex Sans",system-ui,sans-serif;
+  --sheet-shadow:none;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--desk);color:var(--type);font-family:var(--f-body);font-size:16px;line-height:1.55;margin:0;padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:1040px;margin:0 auto;padding-inline:16px;padding-block:24px 40px;display:grid;gap:28px}
+h1,h2,h3{font-family:var(--f-form);margin:0;text-wrap:balance;line-height:1.05}
+p{margin:0;text-wrap:pretty}
+a{color:var(--pen)}
+:focus-visible{outline:2px solid var(--pen);outline-offset:3px}
+.hand{font-family:var(--f-hand);color:var(--pen);font-size:1.45em;line-height:1;letter-spacing:.01em}
+.cap{font-family:var(--f-form);font-weight:700;font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.mono{font-family:var(--f-mono);font-size:.84em}
+.skip{position:absolute;left:16px;top:-60px;background:var(--pen);color:var(--sheet);padding:8px 14px;font-weight:600;text-decoration:none;z-index:40}
+.skip:focus{top:12px}
+
+/* Hoja (foja) */
+.sheet{background:var(--sheet);box-shadow:var(--sheet-shadow);border-radius:3px;position:relative}
+.sheet-head{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 20px;align-items:end;padding:18px 28px 12px;border-bottom:2px solid var(--type)}
+.sheet-head .who{min-width:0;border-bottom:1px solid var(--rule);padding-bottom:2px;font-family:var(--f-hand);color:var(--pen);font-size:26px;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sheet-head .who:empty::before{content:"Razón social de la empresa";color:var(--rule)}
+.folio{font-family:var(--f-mono);font-size:12px;color:var(--muted);text-align:right;white-space:nowrap}
+.sheet-body{padding:22px 28px 26px}
+
+/* Portada: encabezado del acta */
+.cover .formtitle{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:24px;padding:28px 28px 0}
+.cover .issuer{display:grid;gap:4px;align-content:start}
+.cover .issuer b{font-family:var(--f-form);font-weight:600;font-size:15px;letter-spacing:.06em;text-transform:uppercase}
+.cover .issuer span{font-size:13px;color:var(--muted)}
+.cover .meta{text-align:right;font-family:var(--f-form);font-size:13.5px;line-height:1.45;text-transform:uppercase;letter-spacing:.02em}
+.cover .meta strong{font-weight:600}
+.cover h1{padding:26px 28px 8px;font-weight:600;font-size:clamp(48px,9vw,104px);letter-spacing:-.01em;text-transform:uppercase;line-height:.9}
+.cover h1 span{display:block;color:var(--pen);}
+.cover .lede{padding:6px 28px 0;max-width:66ch;color:var(--muted);font-size:17px}
+
+/* Párrafo con espacios para llenar */
+.fill{padding:22px 28px 28px;font-size:18px;line-height:2.3;max-width:900px}
+.fill .blank{display:inline-block;vertical-align:baseline;border:0;border-bottom:1.5px solid var(--type);background:transparent;font-family:var(--f-hand);color:var(--pen);font-size:30px;line-height:1;padding:0 6px 2px;margin:0 4px;border-radius:0;min-width:4ch}
+.fill .blank:focus{outline:none;border-bottom-color:var(--pen);background:var(--pen-soft)}
+.fill .blank::placeholder{color:var(--rule)}
+.fill #empresa{width:min(100%,16ch)}
+.fill #trab{width:5.5ch}
+.fill #uma{width:6.5ch}
+.fill .tick{display:inline-flex;align-items:center;gap:8px;line-height:1.4;font-size:16px;vertical-align:middle}
+.fill .tick input{width:22px;height:22px;accent-color:var(--pen)}
+.fill small{display:block;line-height:1.5;font-size:13px;color:var(--muted);margin-top:6px}
+
+/* Nota legal */
+.notice{border:2px solid var(--type);padding:18px 22px;display:grid;gap:10px;font-size:14.5px;background:var(--sheet)}
+.notice h2{font-weight:600;font-size:20px;text-transform:uppercase;letter-spacing:.03em}
+.notice ul{margin:0;padding-left:20px;display:grid;gap:4px}
+.notice details summary{cursor:pointer;color:var(--pen);font-weight:600;width:max-content;max-width:100%}
+.notice details > div{display:grid;gap:10px;margin-top:10px}
+
+/* Índice */
+nav.index{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:baseline;padding:12px 2px;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+nav.index a{font-family:var(--f-form);font-weight:700;font-size:13px;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;color:var(--type)}
+nav.index a:hover{color:var(--pen)}
+nav.index .cap{margin-right:6px}
+
+section.part{display:grid;gap:18px;scroll-margin-top:16px}
+.parthead{display:grid;gap:8px;max-width:70ch}
+.parthead h2{font-weight:600;font-size:clamp(34px,5.5vw,56px);text-transform:uppercase}
+.parthead p{color:var(--muted)}
+
+/* Leyenda y acciones */
+.legend{display:flex;flex-wrap:wrap;gap:8px 22px;align-items:center;font-size:14px;color:var(--muted)}
+.legend b{font-family:var(--f-hand);font-weight:400;font-size:24px;line-height:1;margin-right:4px}
+.legend .s{color:var(--pen)} .legend .n{color:var(--red)} .legend .a{color:var(--na)}
+.actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+button.btn{font:inherit;font-weight:600;font-size:14.5px;padding:9px 16px;border:1.5px solid var(--type);background:var(--sheet);color:var(--type);cursor:pointer;border-radius:3px;transition:transform .15s ease, background .2s ease}
+button.btn:hover{background:var(--pen-soft)}
+button.btn:active{transform:translateY(1px)}
+button.btn.primary{background:var(--type);color:var(--sheet)}
+button.btn.primary:hover{background:var(--pen);border-color:var(--pen)}
+.toast{font-size:14px;color:var(--ok)}
+
+/* Renglones del formato */
+.rows{display:grid}
+.row{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 18px;padding:16px 0;border-bottom:1px solid var(--rule)}
+.row:last-child{border-bottom:0}
+.slot{display:grid;gap:6px;justify-items:center;align-content:start;width:132px}
+.slot .paren{font-family:var(--f-form);font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--muted)}
+.slot .line{width:100%;height:40px;border-bottom:1.5px solid var(--type);display:grid;place-items:end center;padding-bottom:2px}
+.mark{font-family:var(--f-hand);font-size:36px;line-height:1;color:var(--pen)}
+.row[data-st="no"] .mark{color:var(--red)}
+.row[data-st="na"] .mark{color:var(--na)}
+.mark.fresh{animation:write .5s cubic-bezier(.5,0,.3,1) both}
+@keyframes write{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+.opts{display:flex;gap:4px}
+.opts input{position:absolute;opacity:0;pointer-events:none}
+.opts label{font-family:var(--f-form);font-weight:700;font-size:12px;letter-spacing:.04em;padding:5px 8px;border:1.5px solid var(--rule);border-radius:3px;cursor:pointer;color:var(--muted);user-select:none;transition:background .2s ease,color .2s ease,border-color .2s ease}
+.opts label:hover{border-color:var(--type);color:var(--type)}
+.opts input:focus-visible + label{outline:2px solid var(--pen);outline-offset:2px}
+.opts input[value=si]:checked + label{background:var(--pen);border-color:var(--pen);color:var(--sheet)}
+.opts input[value=no]:checked + label{background:var(--red);border-color:var(--red);color:var(--sheet)}
+.opts input[value=na]:checked + label{background:var(--na);border-color:var(--na);color:var(--sheet)}
+.txt{min-width:0}
+.txt .q{font-weight:600;font-size:16.5px;line-height:1.4}
+.row[data-st="na"] .q{color:var(--muted)}
+.txt .d{font-size:14.5px;color:var(--muted);margin-top:3px;max-width:76ch}
+.refs{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:8px;font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.refs .art{color:var(--type)}
+.refs .warn{color:var(--amber)}
+.obs{grid-column:2;margin-top:10px;border-left:3px solid var(--red);background:var(--red-soft);padding:12px 14px;display:grid;gap:8px}
+.obs .cap{color:var(--red)}
+.obs .amt{font-family:var(--f-form);font-weight:600;font-size:28px;line-height:1.05;color:var(--red);font-variant-numeric:tabular-nums}
+.obs .line2{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center;font-size:13.5px;color:var(--muted)}
+.obs input{width:84px;font-family:var(--f-hand);font-size:24px;color:var(--pen);border:0;border-bottom:1.5px solid var(--type);background:transparent;padding:0 4px;text-align:center}
+.obs input:focus{outline:none;background:var(--pen-soft)}
+.obs .fix{font-size:14px;color:var(--type)}
+.fednote{border:1.5px dashed var(--amber);color:var(--amber);background:var(--amber-soft);padding:10px 14px;font-size:14px;margin-bottom:6px}
+.prog{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+
+/* Barra de cierre fija */
+.tally{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--type);color:var(--sheet);padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px))}
+.tally .in{max-width:1040px;margin:0 auto;display:flex;flex-wrap:wrap;gap:6px 26px;align-items:center;justify-content:space-between}
+.tally .grp{display:flex;flex-wrap:wrap;gap:4px 20px;align-items:baseline}
+.tally .k{font-family:var(--f-form);font-weight:700;font-size:11px;letter-spacing:.12em;text-transform:uppercase;opacity:.7;margin-right:6px}
+.tally .v{font-family:var(--f-form);font-weight:600;font-size:22px;font-variant-numeric:tabular-nums}
+.tally .fine .v{color:#ffb9a3}
+:root[data-theme="dark"] .tally .fine .v{color:#a8262b}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .tally .fine .v{color:#a8262b}}
+
+/* Tabla de multas */
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:660px;font-size:14.5px}
+th,td{text-align:left;padding:11px 12px;border-bottom:1px solid var(--rule);vertical-align:top}
+th{font-family:var(--f-form);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);border-bottom:2px solid var(--type)}
+td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
+td.art{font-family:var(--f-mono);font-size:13px;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+
+/* Protocolo del inspector */
+.cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px 32px}
+.cols h3{font-weight:600;font-size:22px;text-transform:uppercase;margin-bottom:10px}
+.cols ul{margin:0;padding-left:18px;display:grid;gap:8px}
+.cols .bad h3{color:var(--red)}
+.steps{list-style:none;margin:0;padding:0;display:grid;counter-reset:s}
+.steps li{counter-increment:s;display:grid;grid-template-columns:64px minmax(0,1fr);gap:16px;padding:16px 0;border-bottom:1px solid var(--rule)}
+.steps li:last-child{border-bottom:0}
+.steps li::before{content:counter(s);font-family:var(--f-form);font-weight:600;font-size:56px;line-height:.85;color:var(--pen)}
+.steps b{display:block;font-size:17px;margin-bottom:2px}
+.steps p{color:var(--muted);font-size:15px}
+.subt{font-weight:600;font-size:30px;text-transform:uppercase;margin:6px 0 4px}
+
+/* Plazo */
+.deadline{font-size:18px;line-height:2.3}
+.deadline input{font-family:var(--f-hand);font-size:26px;color:var(--pen);border:0;border-bottom:1.5px solid var(--type);background:transparent;padding:0 6px;margin:0 4px}
+.deadline input:focus{outline:none;background:var(--pen-soft)}
+.deadline .due{font-family:var(--f-hand);font-size:34px;color:var(--red);border-bottom:1.5px solid var(--type);padding:0 6px;margin-left:4px;white-space:normal}
+.fine-print{font-size:13.5px;color:var(--muted)}
+
+/* Recomendación final: el párrafo de cierre del acta */
+.closing{border:3px double var(--type);padding:clamp(22px,4vw,40px);display:grid;gap:14px;background:var(--sheet)}
+.closing h2{font-weight:600;font-size:clamp(34px,6vw,64px);text-transform:uppercase;line-height:.95}
+.closing h2 em{font-style:normal;color:var(--pen)}
+.closing p{font-size:17px;max-width:70ch}
+.closing ul{margin:0;padding-left:20px;display:grid;gap:8px;max-width:72ch}
+.closing .fe{font-family:var(--f-form);font-weight:600;letter-spacing:.06em;text-transform:uppercase;font-size:14px}
+
+footer{font-size:13px;color:var(--muted);display:grid;gap:8px;max-width:84ch}
+
+@media (max-width:760px){
+  .cover .formtitle{grid-template-columns:minmax(0,1fr)}
+  .cover .meta{text-align:left}
+  .cols{grid-template-columns:minmax(0,1fr)}
+  .sheet-head,.sheet-body,.fill,.cover .formtitle,.cover h1,.cover .lede{padding-left:18px;padding-right:18px}
+}
+@media (max-width:560px){
+  .row{grid-template-columns:minmax(0,1fr)}
+  .slot{width:100%;grid-template-columns:auto 1fr;justify-items:start;align-items:end}
+  .slot .paren{grid-column:1 / -1}
+  .slot .line{width:110px}
+  .obs{grid-column:1}
+  .steps li{grid-template-columns:44px minmax(0,1fr)}
+  .steps li::before{font-size:42px}
+  .tally .v{font-size:18px}
+}
+
+/* Tipografía formal: serif clásica y ligera para títulos y lo que se llena; sans limpia para etiquetas */
+h1,h2,h3,.cover h1,.parthead h2,.subt,.cols h3,.notice h2,.closing h2{font-family:var(--f-display);font-weight:500;text-transform:none;letter-spacing:0}
+.cover h1{font-size:clamp(40px,6.5vw,72px);line-height:1.02}
+.cover h1 span{display:inline;font-style:italic}
+.parthead h2{font-size:clamp(30px,4.4vw,44px);line-height:1.1}
+.subt{font-size:28px}
+.cols h3{font-size:23px}
+.notice h2{font-size:21px}
+.closing h2{font-size:clamp(30px,4.8vw,50px);line-height:1.08}
+.closing h2 em{font-style:italic}
+.cap,.slot .paren,.opts label,nav.index a,th,.tally .k,.closing .fe,.cover .issuer b{font-weight:600}
+.cover .issuer b{font-size:13px;letter-spacing:.1em}
+.cover .meta{font-size:13px;text-transform:none;letter-spacing:0;color:var(--muted)}
+.cover .meta strong{font-weight:600;color:var(--type)}
+.hand,.mark,.fill .blank,.sheet-head .who,.obs input,.deadline input,.deadline .due,.legend b{font-family:var(--f-hand);font-weight:600}
+.mark{font-size:26px}
+.fill .blank{font-size:22px}
+.sheet-head .who{font-size:20px}
+.legend b{font-size:19px}
+.obs input{font-size:19px}
+.deadline input{font-size:19px}
+.deadline .due{font-size:24px}
+.hand{font-size:1.15em}
+.obs .amt{font-family:var(--f-body);font-weight:600;font-size:24px}
+.tally .v{font-family:var(--f-body);font-weight:600;font-size:19px}
+.steps li::before{font-family:var(--f-display);font-weight:400;font-size:44px;line-height:.9}
+.sheet-head{border-bottom-width:1px}
+.notice,.closing{border-width:1px}
+.closing{border-style:solid;box-shadow:inset 0 0 0 4px var(--sheet), inset 0 0 0 5px var(--rule)}
+button.btn{font-weight:500;border-width:1px}
+@media (max-width:560px){.tally .v{font-size:16px}}
+.fill #uma{width:8ch}
+.fill #trab{width:6ch}
+.fill input[type=number]{-moz-appearance:textfield;appearance:textfield}
+.fill input[type=number]::-webkit-inner-spin-button,.fill input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+
+<a class="skip" href="#diagnostico">Ir al autodiagnóstico</a>
+<main class="wrap">
+
+  <header class="sheet cover">
+    <div class="formtitle">
+      <div class="issuer">
+        <b>Guía para Recursos Humanos</b>
+        <span>Inspección local del trabajo · Baja California</span>
+      </div>
+      <div class="meta">
+        Autodiagnóstico número: <strong>RH-2026</strong><br>
+        Asunto: <strong>Verificar condiciones generales de trabajo</strong><br>
+        En el centro de trabajo:<br>
+        <span class="hand" data-who style="text-transform:none;font-size:26px"></span>
+      </div>
+    </div>
+    <h1>Autodiagnóstico de <span>inspección laboral</span></h1>
+    <p class="lede">Revise su empresa con la misma lista que usa un inspector de la Secretaría del Trabajo y Previsión Social del Estado. Llene cada espacio como lo haría el inspector. Si algo no se cumple, la hoja calcula la multa que prevé la Ley Federal del Trabajo.</p>
+    <div class="fill">
+      En el centro de trabajo de
+      <input class="blank" type="text" id="empresa" placeholder="su empresa" aria-label="Razón social de la empresa">,
+      que tiene
+      <input class="blank" type="number" id="trab" min="1" value="100" aria-label="Total de trabajadores">
+      trabajadores, se calculan las multas con una UMA de $<input class="blank" type="number" id="uma" step="0.01" min="1" value="117.31" aria-label="Valor diario de la UMA"> diarios.
+      <br>
+      <label class="tick"><input type="checkbox" id="reinc"> Hubo sanción por la misma falta en los últimos dos años (reincidencia: la multa se duplica).</label>
+      <small>El número de trabajadores importa: cuando una falta afecta a varios, la ley impone una multa por cada uno (art. 992 LFT). La UMA 2026 es de $117.31 y rige del 1 de febrero de 2026 al 31 de enero de 2027.</small>
+    </div>
+  </header>
+
+  <aside class="notice" aria-labelledby="discTitle">
+    <h2 id="discTitle">Aviso: esta herramienta no constituye asesoría legal</h2>
+    <p>Es una guía de autodiagnóstico de carácter informativo y preventivo. Su uso no crea una relación abogado-cliente ni sustituye la revisión de un abogado laboral sobre los documentos y la situación concreta de su empresa.</p>
+    <p>La lista retoma todos y cada uno de los puntos que contiene el formato oficial de <em>Acta de Inspección Extraordinaria para Verificar Condiciones Generales de Trabajo</em> que utilizan los Inspectores Locales del Trabajo de la Secretaría del Trabajo y Previsión Social del Gobierno del Estado de Baja California, fundado en los artículos 540, 541 y 542 de la Ley Federal del Trabajo y en el Reglamento General de Inspección del Trabajo y Aplicación de Sanciones.</p>
+    <details>
+      <summary>Qué puntos recorre el formato del acta</summary>
+      <div>
+        <ul>
+          <li>la identificación del inspector, la entrega de la orden de inspección y la designación de testigos;</li>
+          <li>los datos de la empresa: constancia de situación fiscal, acta constitutiva, objeto social, RFC, registro patronal, INFONACOT, pagos al IMSS e INFONAVIT y sindicato;</li>
+          <li>la plantilla: menores, mujeres embarazadas y en lactancia, permisos de paternidad, personas con discapacidad, extranjeros y teletrabajo;</li>
+          <li>los contratos individuales, el reglamento interior, las jornadas, el tiempo extra, la prima dominical y los días de descanso obligatorio;</li>
+          <li>los salarios, la PTU, las vacaciones y la prima vacacional, el aguinaldo, las actividades culturales y deportivas y el cuadro general de antigüedades;</li>
+          <li>los servicios especializados y el REPSE, y el listado de observaciones con los documentos que la empresa debe exhibir dentro del plazo de cinco días hábiles.</li>
+        </ul>
+        <p>A esos puntos se agregaron obligaciones de la Ley Federal del Trabajo que un inspector puede revisar o reportar aunque el formato no las mencione: designación de beneficiarios, becas, constancias de servicios, servicios médicos y aviso de accidentes.</p>
+      </div>
+    </details>
+    <p><strong>Sobre las multas.</strong> Los montos son estimaciones calculadas con los rangos de los artículos 992 a 1004-C de la Ley Federal del Trabajo (texto vigente, última reforma DOF 14-05-2026) y con el valor de la UMA que usted capture. La autoridad fija la multa real dentro de cada rango según la intención, la gravedad, el daño, la capacidad económica del patrón y la reincidencia. El formato del acta, los criterios de la autoridad y la ley pueden cambiar. Verifique siempre la versión vigente.</p>
+  </aside>
+
+  <nav class="index" aria-label="Contenido">
+    <span class="cap">Contenido</span>
+    <a href="#diagnostico">Autodiagnóstico</a>
+    <a href="#multas">Multas</a>
+    <a href="#inspector">Visita del inspector</a>
+    <a href="#plazo">Plazo de 5 días</a>
+    <a href="#recomendacion">Recomendación</a>
+  </nav>
+
+  <section class="part" id="diagnostico">
+    <div class="parthead">
+      <span class="cap">Parte 1</span>
+      <h2>Autodiagnóstico</h2>
+      <p>Cada hoja corresponde a un apartado del acta. Marque cada renglón. Lo que marque como "NO" se convierte en una observación con su multa.</p>
+    </div>
+    <div class="legend" aria-hidden="true">
+      <span><b class="s">SÍ</b> cumple</span>
+      <span><b class="n">NO</b> no cumple</span>
+      <span><b class="a">N/A</b> no aplica a su empresa</span>
+    </div>
+    <div class="actions">
+      <button class="btn primary" id="btnCopy" type="button">Copiar lista de pendientes</button>
+      <button class="btn" id="btnAllNo" type="button">Llenar con un ejemplo</button>
+      <button class="btn" id="btnReset" type="button">Borrar respuestas</button>
+      <span class="toast" id="toast" role="status"></span>
+    </div>
+    <div id="checklist" style="display:grid;gap:22px"></div>
+  </section>
+
+  <section class="part" id="multas">
+    <div class="parthead">
+      <span class="cap">Parte 2</span>
+      <h2>Multas de la ley</h2>
+      <p>Rangos del Título Dieciséis de la LFT (texto vigente, última reforma DOF 14-05-2026). La autoridad fija el monto dentro del rango según la intención, la gravedad, el daño, la capacidad económica y la reincidencia (art. 992). Los pesos se calculan con la UMA de la portada.</p>
+    </div>
+    <div class="sheet">
+      <div class="sheet-body tablewrap">
+        <table>
+          <thead><tr><th>Artículo</th><th>Qué sanciona</th><th>UMA</th><th>Pesos por infracción</th></tr></thead>
+          <tbody id="fineTable"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="part" id="inspector">
+    <div class="parthead">
+      <span class="cap">Parte 3</span>
+      <h2>Cuando llega el inspector</h2>
+      <p>La mayoría de las multas se originan en la propia visita, por documentos que estaban en la empresa pero nadie encontró a tiempo, o por frases que alguien dijo sin pensar y quedaron escritas en el acta. Prepare a su equipo antes de que toquen la puerta.</p>
+    </div>
+
+    <div class="sheet"><div class="sheet-body cols">
+      <div>
+        <h3>Antes de la visita</h3>
+        <ul>
+          <li>Nombre a un responsable de inspecciones y a un suplente. De preferencia, con poder notarial vigente para actos de administración.</li>
+          <li>Arme una carpeta física y digital con el mismo orden de este autodiagnóstico. Incluya copias, porque el inspector pide copia de lo que le muestran.</li>
+          <li>Tenga en planta copia del acta constitutiva, del poder del representante y de la constancia de situación fiscal con el domicilio del centro de trabajo.</li>
+          <li>Actualice cada mes las nóminas timbradas, los controles de asistencia y los pagos al IMSS e INFONAVIT.</li>
+          <li>Capacite a recepción y vigilancia: no se niega el acceso, se pide esperar y se llama al responsable.</li>
+          <li>Tenga a la mano el teléfono de su abogado laboral y una sala para atender la diligencia.</li>
+        </ul>
+      </div>
+      <div class="bad">
+        <h3>Errores que cuestan caro</h3>
+        <ul>
+          <li>Negar la entrada o retrasarla sin motivo. La multa por impedir la inspección va de 250 a 5,000 UMA y además se presume que la empresa no tiene los documentos (art. 1004-A).</li>
+          <li>Que atienda alguien sin cargo ni poder y diga "propio manifiesto". Lo que firme obliga a la empresa.</li>
+          <li>Opinar o adivinar. Responda solo lo que le consta y con documento en mano.</li>
+          <li>Firmar "nada que manifestar" sin leer el acta.</li>
+          <li>Dejar todo para el plazo de 5 días.</li>
+        </ul>
+      </div>
+    </div></div>
+
+    <div class="sheet"><div class="sheet-body">
+      <h3 class="subt">Primeros pasos en la puerta</h3>
+      <ol class="steps">
+        <li><div><b>Reciba al inspector y avise de inmediato</b><p>Recepción lo pasa a la sala y llama al responsable de inspecciones y al abogado. Anote la hora de llegada.</p></div></li>
+        <li><div><b>Pida su credencial</b><p>La ley le da derecho a verla (art. 132, fr. XXIV, y art. 542, fr. I, LFT). Revise foto, nombre, número y vigencia. Anote los datos de cada inspector.</p></div></li>
+        <li><div><b>Pida la orden de inspección por escrito</b><p>Revise que traiga la razón social y el domicilio correctos, la fecha, el tipo de inspección (ordinaria o extraordinaria), qué va a revisar y la firma de la autoridad. Quédese con la orden y con la guía de derechos que deben entregarle. Saque una copia y mándela al abogado.</p></div></li>
+        <li><div><b>Que atienda la persona correcta</b><p>Lo ideal es el representante legal o quien tenga poder. Si no está, el puesto más alto de Recursos Humanos, identificado con INE y con un documento que acredite su cargo.</p></div></li>
+        <li><div><b>Designe a sus testigos</b><p>El inspector le pedirá dos testigos. Elija a dos personas de confianza que traigan INE. Si la empresa no los nombra, los nombra el inspector.</p></div></li>
+        <li><div><b>Prevea al representante de los trabajadores</b><p>El acta se levanta con intervención de los trabajadores (art. 542, fr. IV). Si hay sindicato, será su representante; si no, un trabajador.</p></div></li>
+      </ol>
+    </div></div>
+
+    <div class="sheet"><div class="sheet-body cols">
+      <div>
+        <h3>Durante la visita</h3>
+        <ul>
+          <li>Acompañe al inspector todo el tiempo. Designe a una sola persona para hablar por la empresa.</li>
+          <li>Entregue cada documento que pida, con copia, y lleve su propia lista de lo que mostró.</li>
+          <li>Pida que el acta anote "SÍ muestra" en cada documento exhibido. Un "N/M" (no mostrado) se convierte en una posible multa.</li>
+          <li>Si pide algo que no está en la orden, pida con cortesía que quede anotado en el acta.</li>
+          <li>El inspector puede entrevistar a trabajadores a solas (art. 541, fr. III). No intervenga.</li>
+          <li>Si la visita se debe a un accidente o a una queja, responda con hechos que consten en documentos, sin suposiciones.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Al cierre</h3>
+        <ul>
+          <li>Lea el acta completa. Compare cada "N/M" contra lo que sí entregó y pida que se corrija.</li>
+          <li>Use su derecho a manifestar. Anote qué exhibió, qué entregará dentro del plazo y cualquier dato inexacto.</li>
+          <li>Revise que no haya espacios en blanco, tachaduras sin salvar u hojas sin número de acta.</li>
+          <li>Firme y pida copia legible de todas las hojas. Firmar no significa aceptar lo que dice el acta.</li>
+          <li>Calcule ese mismo día la fecha límite del plazo de 5 días hábiles y agéndela.</li>
+          <li>Mande el acta escaneada a su abogado antes de que termine el día.</li>
+        </ul>
+      </div>
+    </div></div>
+  </section>
+
+  <section class="part" id="plazo">
+    <div class="parthead">
+      <span class="cap">Parte 4</span>
+      <h2>Plazo de 5 días hábiles</h2>
+      <p>Después de la visita, la empresa tiene <strong>5 días hábiles improrrogables</strong>, contados a partir del día siguiente, para presentar por escrito sus observaciones y los documentos que faltaron. El escrito lo firma el representante legal y debe acompañar el documento que acredita su personalidad.</p>
+    </div>
+    <div class="sheet"><div class="sheet-body">
+      <p class="deadline">Si la inspección fue el <input type="date" id="fVisita" aria-label="Fecha de la inspección">, el escrito debe presentarse a más tardar el <span class="due" id="fLimite">capture la fecha</span>.</p>
+      <p class="fine-print mono" id="fDetalle"></p>
+      <p class="fine-print" style="margin-top:8px">El cálculo descuenta sábados, domingos y los descansos obligatorios del art. 74 LFT. La Secretaría puede declarar otros días inhábiles: confírmelos con su abogado.</p>
+    </div></div>
+  </section>
+
+  <section class="part" id="recomendacion">
+    <div class="closing">
+      <span class="cap">Recomendación final</span>
+      <h2>Exhiba todo en la <em>propia diligencia</em></h2>
+      <p>No guarde documentos para el plazo de 5 días. El acta es la prueba principal en su contra o a su favor, y la ley da por ciertos los hechos que el inspector asienta mientras usted no demuestre lo contrario (art. 543 LFT).</p>
+      <ul>
+        <li>Un documento que se muestra en la visita queda asentado como "SÍ muestra" y cierra ese punto en ese momento.</li>
+        <li>El plazo de 5 días es corto e improrrogable. Reunir nóminas, recibos y contratos de cientos de trabajadores en una semana rara vez sale completo.</li>
+        <li>Lo que entregue después compite contra lo que ya quedó escrito en el acta, y el escrito debe cumplir requisitos formales: firma del representante legal, poder, original y copia.</li>
+        <li>Cada "N/M" puede convertirse en una multa por cada trabajador afectado.</li>
+        <li>Reserve el plazo de 5 días para faltantes puntuales y para corregir lo que el acta haya asentado mal.</li>
+      </ul>
+    </div>
+
+    <footer>
+      <p><strong>Aviso legal.</strong> Esta herramienta no constituye asesoría legal. Es una guía basada en todos los puntos del formato oficial de Acta de Inspección Extraordinaria para Verificar Condiciones Generales de Trabajo de la STPS del Estado de Baja California. Las multas son estimaciones con base en los artículos 992 a 1004-C de la Ley Federal del Trabajo (texto vigente, última reforma DOF 14-05-2026); el monto real lo fija la autoridad dentro de cada rango. Consulte a su abogado laboral antes de tomar decisiones.</p>
+      <p><strong>Competencia.</strong> La inspección estatal revisa condiciones generales de trabajo. Seguridad e higiene y capacitación corresponden a la STPS federal: el inspector estatal solo auxilia y le reporta lo que detecte (arts. 527-A y 529 LFT). Las ramas industriales del art. 527 LFT (automotriz y autopartes, metalúrgica, química, entre otras) se inspeccionan por la autoridad federal.</p>
+      <p><strong>Datos 2026.</strong> UMA $117.31 diarios (INEGI, DOF 09-01-2026). Salario mínimo en la Zona Libre de la Frontera Norte, que incluye Baja California: $440.87 diarios. Jornada máxima semanal de 48 horas en 2026 y 46 en 2027; tiempo extra de hasta 9 horas por semana en 2026 (Decreto DOF 01-05-2026, transitorios segundo y cuarto).</p>
+      <p>Sus respuestas se guardan solo en este navegador.</p>
+    </footer>
+  </section>
+</main>
+
+<div class="tally" aria-live="polite">
+  <div class="in">
+    <div class="grp">
+      <span><span class="k">Revisados</span><span class="v" id="kDone">0</span><span class="k" id="kDoneS" style="margin-left:4px">/ 44</span></span>
+      <span><span class="k">Cumplimiento</span><span class="v" id="kPct">–</span></span>
+      <span><span class="k">Incumplimientos</span><span class="v" id="kNo">0</span></span>
+    </div>
+    <div class="grp fine"><span class="k">Multa posible</span><span class="v" id="kFine">$0</span></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  // Sanciones del Título Dieciséis LFT (texto vigente DOF 14-05-2026)
+  var S = {
+    "994-I":   {art:"Art. 994, fr. I",   min:50,  max:250,   what:"Jornada diaria (art. 61), descanso semanal (art. 69) y vacaciones (arts. 76 y 77)"},
+    "994-II":  {art:"Art. 994, fr. II",  min:250, max:5000,  what:"Participación de los trabajadores en las utilidades (PTU)"},
+    "994-III": {art:"Art. 994, fr. III", min:50,  max:1500,  what:"Obligaciones del art. 132, frs. IV, VII, VIII, IX, X, XII, XIV, XXII y XXVI Bis (constancias, becas, INFONACOT, entre otras)"},
+    "994-IV":  {art:"Art. 994, fr. IV",  min:250, max:5000,  what:"Capacitación y adiestramiento (art. 132, fr. XV)"},
+    "994-IVB": {art:"Art. 994, fr. IV Bis", min:250, max:5000, what:"Registro electrónico de jornada (art. 132, fr. XXXIV). Sus reglas generales rigen desde el 1 de enero de 2027"},
+    "994-V":   {art:"Art. 994, fr. V",   min:250, max:5000,  what:"Normas de seguridad e higiene y medidas para prevenir riesgos de trabajo"},
+    "994-VI":  {art:"Art. 994, fr. VI",  min:250, max:5000,  what:"Discriminación, hostigamiento o acoso sexual, o tolerarlos"},
+    "993":     {art:"Art. 993",          min:250, max:2500,  what:"Porcentaje mínimo de trabajadores mexicanos (art. 7)"},
+    "995":     {art:"Art. 995",          min:50,  max:2500,  what:"Normas de trabajo de mujeres y menores; certificado de no embarazo; despido por embarazo"},
+    "995B":    {art:"Art. 995 Bis",      min:250, max:5000,  what:"Trabajo de menores de 15 años fuera del círculo familiar. Además, prisión de 1 a 4 años", jail:true},
+    "1002":    {art:"Art. 1002",         min:50,  max:5000,  what:"Cualquier otra violación a las normas de trabajo sin multa específica"},
+    "1004-A":  {art:"Art. 1004-A",       min:250, max:5000,  what:"No permitir la inspección. Además se presume que la empresa no tiene la información"},
+    "1004-C":  {art:"Art. 1004-C",       min:2000,max:50000, what:"Subcontratación prohibida o servicios especializados sin registro REPSE (también para quien se beneficia)"}
+  };
+
+  // Lista de verificación con base en el formato de acta de inspección extraordinaria de condiciones generales de la STPS de B.C.
+  var SECTIONS = [
+    {id:"ident", title:"Identificación de la empresa y seguridad social", items:[
+      {id:"a1", q:"Constancia de situación fiscal con el domicilio del centro de trabajo", d:"Es lo primero que pide el inspector para asentar la razón social y el domicilio correctos.", f:"Acta, apartado de domicilio", s:null, note:"Sin multa directa. Evita errores de identificación en el acta."},
+      {id:"a2", q:"Acta constitutiva y poder notarial del representante legal, en copia, en el centro de trabajo", d:"Si nadie con poder atiende, el acta se levanta con quien esté presente y lo que diga obliga a la empresa.", f:"Acta, apartado de personalidad", s:null, note:"Sin multa directa. Protege a la empresa en la diligencia."},
+      {id:"a3", q:"Pago de cuotas al IMSS de los últimos meses (SIPARE, resumen de liquidación, cédula de determinación)", d:"Comprobantes de pago y listado de trabajadores afiliados.", f:"Art. 15 LSS", s:"EXT", note:"La multa la impone el IMSS conforme a la Ley del Seguro Social, no la LFT."},
+      {id:"a4", q:"Aportaciones al INFONAVIT al corriente (últimos bimestres)", d:"Comprobantes bimestrales y SUA.", f:"Art. 136 LFT", s:"1002", pw:false},
+      {id:"a5", q:"Centro de trabajo afiliado al INFONACOT", d:"Constancia de afiliación. Es gratuita.", f:"Art. 132, fr. XXVI Bis LFT", s:"994-III", pw:false}
+    ]},
+    {id:"contrat", title:"Contratación y personal", items:[
+      {id:"b1", q:"Contrato individual por escrito y firmado de cada trabajador", d:"Con los datos del art. 25: puesto, lugar, jornada, salario, día y lugar de pago, capacitación, descansos y vacaciones. Aplica cuando no hay contrato colectivo.", f:"Arts. 24, 25 y 804, fr. I LFT", s:"1002", pw:true},
+      {id:"b2", q:"Designación de beneficiarios en cada contrato", d:"Quién cobra salarios y prestaciones si el trabajador fallece.", f:"Art. 25, fr. X LFT", s:"1002", pw:true},
+      {id:"b3", q:"Finiquitos firmados y bajas ante el IMSS del último mes", d:"Recibo de finiquito firmado o timbrado y acuse de baja.", f:"Arts. 33 y 47 LFT; art. 15, fr. I LSS", s:"1002", pw:false},
+      {id:"b4", q:"Al menos 90% de la plantilla es de nacionalidad mexicana", d:"No cuentan directores, administradores ni gerentes generales.", f:"Art. 7 LFT", s:"993", pw:false},
+      {id:"b5", q:"Trabajadores extranjeros con documento migratorio vigente que permita trabajar", d:"Constancia de inscripción del empleador ante el INM y aviso de contratación.", f:"Ley de Migración", s:"EXT", note:"El inspector lo revisa, pero la multa corresponde al INM conforme a la Ley de Migración."},
+      {id:"b6", q:"No trabaja ningún menor de 15 años", d:"Verifique edades con acta de nacimiento o CURP.", f:"Art. 23 LFT", s:"995B", pw:false},
+      {id:"b7", q:"Menores de 15 a 17 años con certificado médico, registro y jornada permitida", d:"Sin horas extra, domingos ni festivos; sin labores peligrosas; máximo 6 horas si son menores de 16; 18 días de vacaciones.", f:"Arts. 174 a 180 LFT", s:"995", pw:false},
+      {id:"b8", q:"Si contrata servicios especializados: contrato por escrito y REPSE vigente del proveedor", d:"Contrato, registro REPSE vigente y altas en el IMSS del personal del proveedor.", f:"Arts. 13, 14 y 15 LFT; art. 15-A LSS", s:"1004-C", pw:false}
+    ]},
+    {id:"jornada", title:"Jornada, descansos y asistencia", items:[
+      {id:"c1", q:"Jornada ordinaria de máximo 48 horas a la semana en 2026 (46 en 2027)", d:"Diaria: 8 horas la diurna, 7 la nocturna y 7.5 la mixta. Se puede redistribuir por acuerdo con los trabajadores.", f:"Arts. 58, 59 y 61 LFT; transitorio segundo, DOF 01-05-2026", s:"994-I", pw:true},
+      {id:"c2", q:"Turnos bien clasificados: si un turno tiene 3.5 horas o más entre las 20:00 y las 6:00, es nocturno", d:"Un turno de 15:30 a 23:45 tiene 3 h 45 min de horario nocturno: la ley lo trata como nocturno, con máximo de 7 horas diarias.", f:"Arts. 60 y 61 LFT", s:"994-I", pw:true},
+      {id:"c3", q:"Descanso de al menos 30 minutos en jornada continua", d:"Si el trabajador no puede salir de la planta durante el descanso, ese tiempo cuenta como jornada.", f:"Arts. 63 y 64 LFT", s:"1002", pw:true},
+      {id:"c4", q:"Controles de asistencia o bitácoras de horario de todo el personal del último mes", d:"Desde 2027 será obligatorio el registro electrónico de entrada y salida, con multa propia (art. 994, fr. IV Bis).", f:"Art. 804, fr. III; art. 132, fr. XXXIV LFT", s:"1002", pw:false, y27:true},
+      {id:"c5", q:"Horas extra dentro del límite y pagadas al doble; las excedentes, al triple", d:"En 2026: máximo 9 horas extra por semana, hasta 4 horas al día y en no más de 4 días. Jornada más horas extra: nunca más de 12 horas al día.", f:"Arts. 66 y 68 LFT; transitorio cuarto, DOF 01-05-2026", s:"1002", pw:true},
+      {id:"c6", q:"Un día de descanso con goce de salario por cada seis días trabajados", d:"Rol de descansos y nóminas que lo acrediten.", f:"Art. 69 LFT", s:"994-I", pw:true},
+      {id:"c7", q:"Prima dominical de al menos 25% a quien trabaja en domingo", d:"Recibos timbrados o firmados del último mes.", f:"Arts. 71 y 804, fr. IV LFT", s:"1002", pw:true},
+      {id:"c8", q:"Días de descanso obligatorio trabajados, pagados con salario doble adicional", d:"1 ene, 1er lunes de feb, 3er lunes de mar, 1 may, 16 sep, 3er lunes de nov, 25 dic. Recibos de cada festivo laborado.", f:"Arts. 74 y 75 LFT", s:"1002", pw:true}
+    ]},
+    {id:"salario", title:"Salario y prestaciones", items:[
+      {id:"d1", q:"Nóminas o recibos timbrados con dispersión bancaria del último mes", d:"Pago semanal a quien hace trabajo material y quincenal a los demás.", f:"Arts. 82 a 89, 101 y 804, fr. II LFT", s:"1002", pw:true},
+      {id:"d2", q:"Nadie gana menos del salario mínimo: $440.87 diarios en Baja California (2026)", d:"Zona Libre de la Frontera Norte. Revise también puestos de medio tiempo y de nuevo ingreso.", f:"Art. 90 LFT", s:"1002", pw:true},
+      {id:"d3", q:"Vacaciones según antigüedad: 12 días el primer año, con al menos 12 continuos", d:"Solicitudes firmadas, recibos y la constancia anual de antigüedad y vacaciones.", f:"Arts. 76 a 81 LFT", s:"994-I", pw:true},
+      {id:"d4", q:"Prima vacacional de al menos 25%", d:"Recibos timbrados o firmados del periodo más reciente de cada trabajador.", f:"Arts. 80 y 804, fr. IV LFT", s:"1002", pw:true},
+      {id:"d5", q:"Aguinaldo de al menos 15 días, pagado antes del 20 de diciembre", d:"Recibos del aguinaldo 2025, firmados o timbrados con dispersión bancaria.", f:"Art. 87 LFT", s:"1002", pw:true},
+      {id:"d6", q:"Reparto de utilidades (PTU) del ejercicio 2025 completo", d:"Declaración anual, entrega de copia a los trabajadores, acta de la comisión mixta, proyecto de reparto y recibos de pago.", f:"Arts. 117 a 131 LFT", s:"994-II", pw:true},
+      {id:"d7", q:"Constancias de días trabajados y salario, y de servicios al separarse, cuando se solicitan", d:"Cada 15 días a petición del trabajador y en 3 días al terminar la relación.", f:"Art. 132, frs. VII y VIII LFT", s:"994-III", pw:false}
+    ]},
+    {id:"internos", title:"Reglamento, comisiones y políticas", items:[
+      {id:"e1", q:"Reglamento Interior de Trabajo depositado y acta de su comisión mixta", d:"Acuse de depósito ante la autoridad y acta de integración de la comisión.", f:"Arts. 132, fr. XXVIII, 422 a 425 LFT", s:"1002", pw:false},
+      {id:"e2", q:"Cuadro general de antigüedades vigente, publicado y con acta de su comisión", d:"Publicado en un lugar visible del centro de trabajo.", f:"Arts. 132, fr. XXVIII y 158 LFT", s:"1002", pw:false},
+      {id:"e3", q:"Protocolo contra discriminación, violencia y acoso, trabajo forzoso e infantil, acordado con los trabajadores", d:"Documento firmado, evidencia de difusión y canal de denuncia. Tolerar el acoso tiene multa propia de 250 a 5,000 UMA (art. 994, fr. VI).", f:"Art. 132, fr. XXXI LFT", s:"1002", pw:false},
+      {id:"e4", q:"Actividades culturales y deportivas para el personal", d:"Calendario, fotos o comprobantes de equipo y apoyos.", f:"Art. 132, fr. XXV LFT", s:"1002", pw:false},
+      {id:"e5", q:"Beca de estudios: 1 becario con 100 a 999 trabajadores; 3 con 1,000 o más", d:"Acta de designación del becario y comprobantes de pago.", f:"Art. 132, fr. XIV LFT", s:"994-III", pw:false},
+      {id:"e6", q:"Si hay teletrabajo: política escrita, listado de personas y equipo entregado", d:"Incluya derecho a la desconexión y registro de insumos.", f:"Arts. 330-A a 330-K LFT", s:"1002", pw:false}
+    ]},
+    {id:"protegidos", title:"Grupos con protección especial", items:[
+      {id:"f1", q:"Trabajadoras embarazadas sin labores peligrosas y con incapacidad de 6 semanas antes y 6 después del parto", d:"Expedientes y movimientos de puesto.", f:"Arts. 166 y 170 LFT", s:"995", pw:false},
+      {id:"f2", q:"Lactancia: dos descansos de 30 minutos al día o una hora menos de jornada, en lugar adecuado e higiénico", d:"Hasta por seis meses. Sala de lactancia o acuerdo de reducción de jornada.", f:"Art. 170, fr. IV LFT", s:"995", pw:false},
+      {id:"f3", q:"No se pide certificado de no embarazo para contratar, ascender o permanecer", d:"Revise formatos de reclutamiento y exámenes médicos.", f:"Art. 133, fr. XIV LFT", s:"995", pw:false},
+      {id:"f4", q:"Permiso de paternidad de 5 días laborables con goce de sueldo", d:"Solicitudes y nóminas que lo acrediten.", f:"Art. 132, fr. XXVII Bis LFT", s:"1002", pw:false},
+      {id:"f5", q:"Instalaciones accesibles para personas con discapacidad (más de 50 trabajadores)", d:"Rampas, sanitarios y accesos.", f:"Art. 132, fr. XVI Bis LFT", s:"1002", pw:false}
+    ]},
+    {id:"seguridad", title:"Seguridad, salud y capacitación", fed:true, items:[
+      {id:"g1", q:"Botiquín y personal capacitado en primeros auxilios", d:"Brigada de primeros auxilios con constancias de capacitación.", f:"Arts. 132, fr. XVII y 504, fr. I LFT", s:"994-V", pw:false},
+      {id:"g2", q:"Más de 100 trabajadores: enfermería bajo un médico. Más de 300: hospital o convenio con sanatorio acordado con los trabajadores", d:"Horario del médico, convenio con la clínica y acta del acuerdo con los trabajadores.", f:"Art. 504, frs. II a IV LFT", s:"994-V", pw:false},
+      {id:"g3", q:"Aviso de accidentes de trabajo dentro de 72 horas, y de inmediato en caso de muerte", d:"Acuses ante la STPS, el inspector y el Tribunal, además del aviso al IMSS (ST-7).", f:"Art. 504, frs. V y VI LFT", s:"1002", pw:false},
+      {id:"g4", q:"Capacitación y adiestramiento del personal", d:"Planes, programas y constancias de habilidades laborales.", f:"Art. 132, fr. XV LFT", s:"994-IV", pw:false}
+    ]}
+  ];
+
+
+  var ALL = [];
+  SECTIONS.forEach(function(s){ s.items.forEach(function(it){ it.sec = s.id; ALL.push(it); }); });
+
+  var KEY = "autodiag-insp-bc-v1";
+  var state = {ans:{}, aff:{}, trab:100, uma:117.31, reinc:false, empresa:"", fVisita:""};
+  try { var raw = localStorage.getItem(KEY); if (raw) { var p = JSON.parse(raw); for (var k in p) state[k] = p[k]; } } catch(e){}
+  function save(){ try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e){} }
+
+  var money = new Intl.NumberFormat("es-MX",{style:"currency",currency:"MXN",maximumFractionDigits:0});
+  var num = new Intl.NumberFormat("es-MX");
+  function $(id){ return document.getElementById(id); }
+  function esc(t){ return String(t).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];}); }
+  var MARK = {si:"SÍ", no:"NO", na:"N/A"};
+
+  function affected(it){
+    var v = state.aff[it.id];
+    if (v != null && v !== "" && !isNaN(v)) return Math.max(1, parseInt(v,10));
+    return it.pw ? Math.max(1, state.trab|0) : 1;
+  }
+  function fine(it){
+    var s = S[it.s]; if (!s) return null;
+    var n = affected(it), m = state.reinc ? 2 : 1;
+    return {s:s, n:n, minU:s.min*n*m, maxU:s.max*n*m, min:s.min*n*m*state.uma, max:s.max*n*m*state.uma};
+  }
+  function refFor(it){
+    if (it.s === "EXT") return '<span class="warn">Multa fuera de la LFT</span>';
+    if (!it.s) return '<span>Sin multa directa</span>';
+    var s = S[it.s];
+    return '<span>Si no cumple: '+esc(s.art)+' · '+num.format(s.min)+' a '+num.format(s.max)+' UMA'+(it.pw?' por trabajador':'')+'</span>';
+  }
+
+  function render(){
+    var html = "", total = SECTIONS.length;
+    SECTIONS.forEach(function(sec, i){
+      html += '<article class="sheet" id="sec-'+sec.id+'" aria-labelledby="h-'+sec.id+'">';
+      html += '<div class="sheet-head"><div class="who" data-who></div><div class="folio">Foja '+(i+1)+' de '+total+'</div></div>';
+      html += '<div class="sheet-body"><div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 16px;align-items:baseline;margin-bottom:8px"><h3 id="h-'+sec.id+'" class="subt" style="margin:0">'+esc(sec.title)+'</h3><span class="prog" data-count="'+sec.id+'"></span></div>';
+      if (sec.fed) html += '<div class="fednote">Materia federal. El inspector estatal la revisa y reporta lo que detecte a la STPS federal, que es quien sanciona (arts. 527-A y 529 LFT).</div>';
+      html += '<div class="rows">';
+      sec.items.forEach(function(it){
+        var st = state.ans[it.id] || "";
+        html += '<div class="row" data-id="'+it.id+'" data-st="'+st+'">';
+        html += '<div class="slot"><span class="paren">(SÍ / NO / N/A)</span><span class="line"><span class="mark" id="m-'+it.id+'">'+(st?MARK[st]:"")+'</span></span>';
+        html += '<span class="opts" role="radiogroup" aria-label="'+esc(it.q)+'">';
+        [["si","SÍ","Cumple"],["no","NO","No cumple"],["na","N/A","No aplica"]].forEach(function(o){
+          var rid = "r-"+it.id+"-"+o[0];
+          html += '<input type="radio" name="r-'+it.id+'" id="'+rid+'" value="'+o[0]+'"'+(st===o[0]?" checked":"")+'><label for="'+rid+'" title="'+o[2]+'" aria-label="'+o[2]+'">'+o[1]+'</label>';
+        });
+        html += '</span></div>';
+        html += '<div class="txt"><div class="q">'+esc(it.q)+'</div><div class="d">'+esc(it.d)+'</div><div class="refs"><span class="art">'+esc(it.f)+'</span>'+refFor(it)+(it.y27?'<span class="warn">Registro electrónico obligatorio en 2027</span>':'')+'</div></div>';
+        html += '<div class="obs" id="obs-'+it.id+'" hidden></div>';
+        html += '</div>';
+      });
+      html += '</div></div></article>';
+    });
+    $("checklist").innerHTML = html;
+    paintWho();
+    ALL.forEach(function(it){ updateItem(it, false); });
+    update();
+  }
+
+  function paintWho(){
+    var n = (state.empresa||"").trim();
+    Array.prototype.forEach.call(document.querySelectorAll("[data-who]"), function(el){ el.textContent = n; });
+  }
+
+  function updateItem(it, animate){
+    var row = document.querySelector('.row[data-id="'+it.id+'"]');
+    var st = state.ans[it.id] || "";
+    row.setAttribute("data-st", st);
+    var m = $("m-"+it.id); m.textContent = st ? MARK[st] : "";
+    if (animate){ m.classList.remove("fresh"); void m.offsetWidth; m.classList.add("fresh"); }
+    var box = $("obs-"+it.id);
+    if (st !== "no"){ box.hidden = true; box.innerHTML = ""; return; }
+    box.hidden = false;
+    if (it.s === "EXT" || !it.s){
+      box.innerHTML = '<span class="cap">Observación</span><div class="fix"><strong>'+(it.s==="EXT"?"Multa fuera de la LFT. ":"Sin multa directa. ")+'</strong>'+esc(it.note||"")+' Corrija este punto antes de una visita.</div>';
+      return;
+    }
+    var f = fine(it);
+    box.innerHTML = '<span class="cap">Observación · multa posible</span>' +
+      '<div class="amt" data-amt>'+money.format(f.min)+' a '+money.format(f.max)+'</div>' +
+      '<div class="line2"><span data-uma>'+esc(f.s.art)+' LFT · '+num.format(f.minU)+' a '+num.format(f.maxU)+' UMA'+(state.reinc?' (duplicada por reincidencia)':'')+'</span>' +
+      '<label for="aff-'+it.id+'">Trabajadores afectados</label><input type="number" min="1" id="aff-'+it.id+'" value="'+f.n+'"></div>' +
+      '<div class="line2">'+esc(f.s.what)+'.'+(f.s.jail?' <strong>Puede haber pena de prisión.</strong>':'')+'</div>';
+    $("aff-"+it.id).addEventListener("input", function(e){
+      state.aff[it.id] = e.target.value; save();
+      var g = fine(it);
+      box.querySelector("[data-amt]").textContent = money.format(g.min)+" a "+money.format(g.max);
+      box.querySelector("[data-uma]").textContent = g.s.art+" LFT · "+num.format(g.minU)+" a "+num.format(g.maxU)+" UMA"+(state.reinc?" (duplicada por reincidencia)":"");
+      update();
+    });
+  }
+
+  function update(){
+    var si=0,no=0,na=0,min=0,max=0;
+    ALL.forEach(function(it){
+      var st = state.ans[it.id];
+      if (st==="si") si++; else if (st==="na") na++;
+      else if (st==="no"){ no++; var f = fine(it); if (f){ min+=f.min; max+=f.max; } }
+    });
+    var base = si+no;
+    $("kDone").textContent = si+no+na; $("kDoneS").textContent = "/ "+ALL.length;
+    $("kNo").textContent = no;
+    $("kPct").textContent = base ? Math.round(si*100/base)+"%" : "–";
+    $("kFine").textContent = no ? money.format(min)+" a "+money.format(max) : "$0";
+    SECTIONS.forEach(function(sec){
+      var d=0; sec.items.forEach(function(it){ if (state.ans[it.id]) d++; });
+      var el = document.querySelector('[data-count="'+sec.id+'"]'); if (el) el.textContent = d+" de "+sec.items.length+" renglones";
+    });
+    renderFineTable();
+  }
+
+  function renderFineTable(){
+    var order = ["994-I","994-II","994-III","994-IV","994-IVB","994-V","994-VI","993","995","995B","1002","1004-A","1004-C"];
+    $("fineTable").innerHTML = order.map(function(k){
+      var s = S[k];
+      return '<tr><td class="art">'+esc(s.art)+'</td><td>'+esc(s.what)+'</td><td class="n">'+num.format(s.min)+' a '+num.format(s.max)+'</td><td class="n">'+money.format(s.min*state.uma)+' a '+money.format(s.max*state.uma)+'</td></tr>';
+    }).join("") + '<tr><td class="art">Art. 992</td><td colspan="3">Si una falta afecta a varios trabajadores, se impone una multa por cada uno. Si un mismo acto viola varias normas, cada infracción se multa por separado. La reincidencia dentro de 2 años duplica la multa.</td></tr>';
+  }
+
+  $("checklist").addEventListener("change", function(e){
+    var t = e.target; if (t.type !== "radio") return;
+    var id = t.name.slice(2); state.ans[id] = t.value; save();
+    var it = ALL.filter(function(x){return x.id===id;})[0]; updateItem(it, true); update();
+  });
+
+  $("empresa").value = state.empresa || "";
+  $("trab").value = state.trab; $("uma").value = state.uma; $("reinc").checked = !!state.reinc;
+  $("empresa").addEventListener("input", function(e){ state.empresa = e.target.value; save(); paintWho(); });
+  $("trab").addEventListener("input", function(e){ var v = parseInt(e.target.value,10); state.trab = v>0?v:1; save(); ALL.forEach(function(it){ updateItem(it,false); }); update(); });
+  $("uma").addEventListener("input", function(e){ var v = parseFloat(e.target.value); state.uma = v>0?v:117.31; save(); ALL.forEach(function(it){ updateItem(it,false); }); update(); });
+  $("reinc").addEventListener("change", function(e){ state.reinc = e.target.checked; save(); ALL.forEach(function(it){ updateItem(it,false); }); update(); });
+
+  function toast(m){ var t=$("toast"); t.textContent=m; setTimeout(function(){ t.textContent=""; }, 3500); }
+  $("btnReset").addEventListener("click", function(){ state.ans={}; state.aff={}; save(); render(); toast("Respuestas borradas."); });
+  $("btnAllNo").addEventListener("click", function(){
+    // Ejemplo ilustrativo con datos ficticios: faltantes típicos en nómina y prestaciones
+    var demoNo = ["b1","c4","c5","c8","d3","d4","d5","d6"];
+    ALL.forEach(function(it){ state.ans[it.id] = demoNo.indexOf(it.id)>=0 ? "no" : (["b6","b7","b8","e6"].indexOf(it.id)>=0 ? "na" : "si"); });
+    state.aff = {}; save(); render(); toast("Ejemplo con datos ficticios. Use \"Borrar respuestas\" para empezar el suyo.");
+  });
+  $("btnCopy").addEventListener("click", function(){
+    var lines = [], tot=[0,0];
+    lines.push("AUTODIAGNÓSTICO DE INSPECCIÓN LABORAL BC"+(state.empresa?" · "+state.empresa:""));
+    lines.push("Trabajadores: "+state.trab+" · UMA: $"+state.uma+(state.reinc?" · Reincidencia":""));
+    lines.push("");
+    ALL.forEach(function(it){
+      if (state.ans[it.id] !== "no") return;
+      var f = fine(it);
+      if (f){ tot[0]+=f.min; tot[1]+=f.max; lines.push("• "+it.q+" ("+it.f+") → "+f.s.art+": "+money.format(f.min)+" a "+money.format(f.max)+" ["+f.n+" afectado(s)]"); }
+      else lines.push("• "+it.q+" ("+it.f+") → "+(it.note||""));
+    });
+    if (lines.length === 3) lines.push("Sin incumplimientos marcados.");
+    else { lines.push(""); lines.push("Multa posible total: "+money.format(tot[0])+" a "+money.format(tot[1])); }
+    var text = lines.join("\n");
+    try { navigator.clipboard.writeText(text).then(function(){ toast("Lista copiada."); }, function(){ fallback(text); }); } catch(e){ fallback(text); }
+  });
+  function fallback(text){
+    var ta = document.createElement("textarea"); ta.value = text; ta.style.position="fixed"; ta.style.opacity="0"; document.body.appendChild(ta); ta.select();
+    try { document.execCommand("copy"); toast("Lista copiada."); } catch(e){ toast("No se pudo copiar. Seleccione el texto a mano."); }
+    document.body.removeChild(ta);
+  }
+
+  function nthMonday(y,m,n){ var d=new Date(y,m,1); var off=(8-d.getDay())%7; return new Date(y,m,1+off+7*(n-1)); }
+  function holidays(y){
+    var h=[new Date(y,0,1), nthMonday(y,1,1), nthMonday(y,2,3), new Date(y,4,1), new Date(y,8,16), nthMonday(y,10,3), new Date(y,11,25)];
+    if ((y-2024)%6===0) h.push(new Date(y,9,1));
+    return h.map(function(d){ return d.toDateString(); });
+  }
+  function calcPlazo(){
+    var v = $("fVisita").value; state.fVisita = v; save();
+    if (!v){ $("fLimite").textContent="capture la fecha"; $("fDetalle").textContent=""; return; }
+    var p = v.split("-"); var d = new Date(+p[0], +p[1]-1, +p[2]); var n=0, skipped=[];
+    while(n<5){
+      d.setDate(d.getDate()+1);
+      if (d.getDay()===0||d.getDay()===6) continue;
+      if (holidays(d.getFullYear()).indexOf(d.toDateString())>=0){ skipped.push(d.toLocaleDateString("es-MX",{day:"numeric",month:"short"})); continue; }
+      n++;
+    }
+    $("fLimite").textContent = d.toLocaleDateString("es-MX",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
+    $("fDetalle").textContent = "Horario de oficialía: 08:00 a 14:00 h"+(skipped.length?" · Se descontó festivo: "+skipped.join(", "):"");
+  }
+  $("fVisita").value = state.fVisita || "";
+  $("fVisita").addEventListener("input", calcPlazo);
+  calcPlazo();
+
+  render();
+})();
+</script>
+
+</body></html>

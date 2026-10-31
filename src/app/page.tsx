@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { AnuncioCalculadora } from "@/componentes/AnuncioCalculadora";
 import { AvisoLegal } from "@/componentes/AvisoLegal";
 import { DemoPunto } from "@/componentes/DemoPunto";
 import { Chip, EscenaHero, Sello } from "@/componentes/EscenaHero";
@@ -10,6 +11,7 @@ import { PUNTOS } from "@/lib/avance";
 export default function Portada() {
   return (
     <main>
+      <AnuncioCalculadora />
       <EscenaHero />
 
       <section className="demo sobre-noche">
@@ -47,6 +49,17 @@ export default function Portada() {
           <div>
             <h2>{APERCIBIMIENTOS.length} etapas, de la puerta al juicio</h2>
             <p>Qué advierte la autoridad, qué pasa si no atiende y cuándo vence su plazo, contado en días hábiles.</p>
+          </div>
+        </article>
+        <article className="modulo">
+          <div className="icono gira"><div className="chip">{"{ }"}</div></div>
+          <div>
+            <h2>2 repositorios gratuitos y 5 en preparación</h2>
+            <p>Use la calculadora laboral y el autodiagnóstico sin costo, y revise el código en GitHub.</p>
+            <div className="acciones" style={{ marginTop: 14 }}>
+              <Link href="/calculadora" className="btn lleno">Abrir la calculadora</Link>
+              <Link href="/repositorios" className="btn">Ver repositorios</Link>
+            </div>
           </div>
         </article>
       </section>

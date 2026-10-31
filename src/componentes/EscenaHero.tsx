@@ -41,7 +41,8 @@ export function EscenaHero() {
     const objetivoP = () => {
       if (!ancha.matches) return 0;
       const recorrido = (el.parentElement?.offsetHeight ?? 0) - el.offsetHeight;
-      return recorrido > 0 ? Math.min(1, Math.max(0, window.scrollY / recorrido)) : 0;
+      const inicio = el.parentElement?.offsetTop ?? 0;
+      return recorrido > 0 ? Math.min(1, Math.max(0, (window.scrollY - inicio) / recorrido)) : 0;
     };
 
     const pintar = () => {
@@ -91,7 +92,11 @@ export function EscenaHero() {
       <section className="escena" ref={escena}>
         <div className="escena-nav">
           <Marca />
-          <Link href="/entrar" className="btn">Entrar</Link>
+          <nav className="escena-menu" aria-label="Secciones">
+            <Link href="/calculadora">Calculadora gratis</Link>
+            <Link href="/repositorios">Repositorios</Link>
+            <Link href="/entrar" className="btn">Entrar</Link>
+          </nav>
         </div>
 
         <p className="palabra" aria-hidden="true">

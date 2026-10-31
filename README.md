@@ -14,6 +14,8 @@ Una empresa en Baja California puede recibir hoy a un inspector de la Secretarí
 | **Apercibimientos** | 9 etapas, de la puerta del centro de trabajo al juicio: qué advierte la autoridad, qué pasa si no se atiende y cuándo vence el plazo en días hábiles. |
 | **Resumen** | Lo que el acta asentaría hoy, la multa posible, los plazos corriendo y una lista de pendientes para copiar. |
 | **Despacho** | El abogado ve el avance de cada empresa cliente en una sola tabla. |
+| **Calculadora** | Finiquitos, liquidaciones, salarios caídos, tiempo extra, descansos y PTU, gratis y sin enviar datos. Está en `/calculadora`. |
+| **Repositorios** | 2 gratuitos, en `public/repositorios/`, y 5 privados en preparación con pago en modo de prueba de Stripe. Está en `/repositorios`. |
 
 Pruébelo sin cuenta en `/demo`. La revisión con IA requiere cuenta.
 
@@ -58,7 +60,7 @@ cp .env.example .env.local
 npm run dev
 ```
 
-Complete `.env.local` con la URL y la clave publicable de Supabase, y con `ANTHROPIC_API_KEY`. Aplique la migración de `supabase/migrations/`. Para dar acceso de despacho, inserte el `user_id` de la cuenta en la tabla `admins`.
+Complete `.env.local` con la URL y la clave publicable de Supabase, con `ANTHROPIC_API_KEY` y, para el pago de prueba, con `STRIPE_SECRET_KEY`. Ese flujo solo acepta claves `sk_test_` y requiere capturar los precios en `src/datos/repositorios.ts`. Aplique la migración de `supabase/migrations/`. Para dar acceso de despacho, inserte el `user_id` de la cuenta en la tabla `admins`.
 
 ```bash
 npm test

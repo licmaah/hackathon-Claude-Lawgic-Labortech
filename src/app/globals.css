@@ -57,13 +57,50 @@ button, input, select { font: inherit; color: inherit; }
 .marca { display: inline-flex; align-items: center; gap: 9px; font-weight: 600; font-size: 24px; letter-spacing: -.01em; color: var(--noche); text-decoration: none; }
 .marca img { height: 46px; width: auto; }
 
+/* Anuncio de la calculadora: cinta como pantalla del reloj */
+.anuncio { display: flex; align-items: stretch; height: 40px; background: var(--noche); color: var(--menta); text-decoration: none; overflow: hidden; }
+.cinta { flex: 1; min-width: 0; overflow: hidden; display: flex; align-items: center; }
+.cinta-pista { display: inline-flex; width: max-content; animation: cinta 34s linear infinite; }
+.cinta-tramo { display: inline-flex; font: 700 15px/1 var(--f-lcd), monospace; white-space: nowrap; }
+.cinta-tramo span { padding: 0 26px; border-right: 2px solid var(--turquesa); }
+@keyframes cinta { to { transform: translateX(-33.3333%); } }
+.anuncio:hover .cinta-pista, .anuncio:focus-visible .cinta-pista { animation-play-state: paused; }
+.anuncio:focus-visible { outline-offset: -3px; }
+.anuncio-cta { flex: none; display: flex; align-items: center; padding: 0 18px; background: var(--turquesa); color: var(--noche); font-weight: 600; font-size: 14px; white-space: nowrap; }
+.anuncio:hover .anuncio-cta { background: var(--menta); }
+
+/* Calculadora */
+.calc-pagina { height: 100svh; display: flex; flex-direction: column; }
+.calc-marco { flex: 1; min-height: 0; width: 100%; border: 0; display: block; }
+
+/* Repositorios */
+.repos { max-width: 1120px; margin: 0 auto; padding: clamp(28px, 5vw, 56px) 16px 72px; display: grid; gap: 34px; }
+.repos h1 { font-size: clamp(38px, 6vw, 64px); }
+.repos section > h2 { font-size: 28px; margin-bottom: 14px; }
+.repos-gratis { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.repo-gratis { background: var(--turquesa); border: 2.5px solid var(--noche); border-radius: 10px; box-shadow: 8px 9px 0 var(--noche); padding: 24px; display: grid; gap: 12px; align-content: start; justify-items: start; }
+.repo-gratis h3 { font-size: 28px; }
+.repo-gratis p { max-width: 46ch; font-weight: 500; }
+.repo-gratis .btn.lleno { background: var(--noche); color: var(--blanco); }
+.repo-gratis .btn.lleno:hover { box-shadow: 3px 3px 0 var(--blanco); }
+.repos-nota { margin: -6px 0 12px; }
+.repos-venta { list-style: none; margin: 0; padding: 0; background: var(--blanco); border: 1px solid var(--linea); border-radius: 8px; }
+.repos-venta li { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px 28px; padding: 18px 22px; border-bottom: 1px solid var(--linea); }
+.repos-venta li:last-child { border-bottom: 0; }
+.repos-venta h3 { font-size: 21px; }
+.repos-venta p { font-size: 15px; color: var(--gris-texto); margin: 3px 0; max-width: 62ch; }
+.repo-precio { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.comprar { display: grid; gap: 6px; justify-items: start; }
+
 /* Portada: escenario */
 .rail { height: 185vh; }
 .escena {
-  position: sticky; top: 0; height: 100svh; min-height: 620px; overflow: hidden; background: var(--turquesa);
+  position: sticky; top: 0; height: calc(100svh - 40px); min-height: 620px; overflow: hidden; background: var(--turquesa);
   perspective: 1300px; perspective-origin: 50% 35%; --mx: 0; --my: 0; --p: 0;
 }
 .escena-nav { position: absolute; z-index: 5; inset: 0 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 20px clamp(16px, 3vw, 40px); }
+.escena-menu { display: flex; align-items: center; gap: 22px; font-weight: 600; font-size: 15px; }
+.escena-menu a:not(.btn) { color: var(--noche); text-underline-offset: 3px; }
 .palabra {
   position: absolute; left: 0; right: 0; top: 13vh; margin: 0; text-align: center; white-space: nowrap;
   font: 400 15.6vw/1 var(--f-marca), Arial Black, sans-serif; letter-spacing: -.035em; color: var(--noche);
@@ -365,6 +402,9 @@ td.n { font-variant-numeric: tabular-nums; white-space: nowrap; }
 
 /* En celular el escenario deja de fijarse: la palabra arriba, los objetos debajo y luego el texto */
 @media (max-width: 760px) {
+  .escena-menu a:not(.btn) { display: none; }
+  .repos-gratis { grid-template-columns: minmax(0, 1fr); }
+  .anuncio-cta { padding: 0 12px; font-size: 13px; }
   .rail { height: auto; }
   .escena { position: relative; height: auto; min-height: 0; padding-top: 66px; display: grid; }
   .palabra { position: relative; top: auto; font-size: 17.6vw; }
