@@ -1,0 +1,1091 @@
+<!doctype html><html lang="es-MX"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calculadora laboral | LaborTech</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Prata&display=swap">
+<style>
+:root{
+  --paper:#F4F5F5;--surface:#FFFFFF;--surface-2:#E6E7E8;--line:#E6E7E8;--line-strong:#A9A9AD;
+  --ink:#000000;--ink-2:#4A4A4F;--ink-3:#5E5E63;
+  --sello:#0B6B60;--sello-ink:#084F47;--sello-soft:#DFF5F1;
+  --oxido:#AD3A26;--oxido-soft:#FCEFEC;--ambar:#3F3F46;--ambar-soft:#E6E7E8;--focus:#14B8A6;
+  --shadow:none;--r:8px;
+  --sans:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --serif:"Prata",Georgia,"Times New Roman",serif;
+  --mono:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+@font-face{font-family:"DSEG14";src:url("../../fuentes/DSEG14Classic-Bold.woff2") format("woff2");font-weight:700;font-display:swap}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--sans);
+  font-size:15px;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3{font-family:var(--serif);font-weight:400;text-wrap:balance;margin:0}
+.wrap{max-width:1320px;margin:0 auto;padding:0 20px 80px}
+
+/* ---------- encabezado ---------- */
+header.top{
+  border-bottom:1px solid var(--line);
+  background:var(--surface);
+  position:sticky;top:0;z-index:30;
+}
+.top-in{
+  max-width:1320px;margin:0 auto;padding:12px 20px;
+  display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+}
+.brand{display:flex;align-items:baseline;gap:10px;margin-right:auto}
+.brand h1{font-size:20px;letter-spacing:-.01em}
+.brand .sub{font-size:13px;color:var(--ink-3)}
+.tools{display:flex;gap:8px;flex-wrap:wrap}
+button.btn{
+  font:500 13px/1 var(--sans);
+  padding:9px 13px;border-radius:8px;cursor:pointer;
+  border:1px solid var(--line-strong);
+  background:var(--surface-2);color:var(--ink);
+}
+button.btn:hover{border-color:var(--sello);color:var(--sello)}
+button.btn.primary{background:#14B8A6;border-color:#000;color:#000;font-weight:600}
+button.btn.primary:hover{background:#7CDECF;border-color:#000;color:#000}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,
+summary:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+
+/* ---------- aviso ---------- */
+.aviso{
+  display:flex;gap:10px;align-items:flex-start;
+  border:1px solid var(--line);border-left:3px solid var(--ambar);
+  background:var(--ambar-soft);color:var(--ink-2);
+  padding:10px 14px;border-radius:var(--r);
+  font-size:12.5px;margin:18px 0 22px;
+}
+.aviso b{color:var(--ink)}
+
+/* ---------- rejilla ---------- */
+.grid{display:grid;grid-template-columns:minmax(0,1fr);gap:22px}
+@media (min-width:1080px){
+  .grid{grid-template-columns:minmax(0,1fr) 400px;align-items:start}
+  .col-out{position:sticky;top:76px;max-height:calc(100vh - 96px);overflow:auto}
+}
+
+/* ---------- tarjetas ---------- */
+.card{
+  background:var(--surface);border:1px solid var(--line);
+  border-radius:var(--r);box-shadow:var(--shadow);margin-bottom:18px;
+}
+.card > summary,.card > .card-head{
+  display:flex;align-items:center;gap:10px;
+  padding:13px 16px;cursor:pointer;list-style:none;
+  border-bottom:1px solid transparent;
+}
+details[open].card > summary{border-bottom-color:var(--line)}
+.card > summary::-webkit-details-marker{display:none}
+.card > summary::after{
+  content:"";width:7px;height:7px;flex:none;
+  border-right:1.5px solid var(--ink-3);border-bottom:1.5px solid var(--ink-3);
+  transform:rotate(45deg) translateY(-2px);transition:transform .18s ease;
+}
+details[open].card > summary::after{transform:rotate(225deg) translateY(-2px)}
+.card h2{font-size:16px}
+.card .hint{font-size:12px;color:var(--ink-3);font-family:var(--sans)}
+.card-body{padding:4px 16px 18px}
+.num{
+  font-family:var(--mono);font-size:11px;color:var(--sello);
+  background:var(--sello-soft);border-radius:5px;padding:2px 6px;flex:none;
+  letter-spacing:.02em;
+}
+.card > summary h2{margin-right:auto}
+.tag-off{margin-right:6px;font-size:11px;color:var(--ink-3);font-family:var(--mono)}
+
+/* ---------- formularios ---------- */
+.fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px 14px}
+.f{display:flex;flex-direction:column;gap:5px;min-width:0}
+.f.wide{grid-column:1/-1}
+label,.lbl{font-size:13px;font-weight:600;color:var(--ink-2)}
+input[type=text],input[type=number],input[type=date],select,textarea{
+  font:400 14px/1.3 var(--sans);
+  background:var(--paper);color:var(--ink);
+  border:1px solid var(--line-strong);border-radius:7px;
+  padding:9px 10px;width:100%;min-width:0;
+}
+input[type=number]{font-family:var(--mono);font-variant-numeric:tabular-nums}
+input:disabled{opacity:.5}
+.f .help{font-size:11px;color:var(--ink-3);line-height:1.35}
+.check{display:flex;align-items:flex-start;gap:8px;font-size:13.5px;color:var(--ink-2);cursor:pointer;text-transform:none;letter-spacing:0;font-weight:400}
+.check input{margin-top:2px;accent-color:var(--sello);flex:none;width:15px;height:15px}
+.check b{color:var(--ink);font-weight:600}
+.row-checks{display:flex;flex-direction:column;gap:9px;margin-top:12px}
+fieldset{border:0;padding:0;margin:0}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg label{
+  text-transform:none;letter-spacing:0;font-size:13px;font-weight:500;
+  border:1px solid var(--line-strong);border-radius:7px;padding:7px 11px;cursor:pointer;color:var(--ink-2);
+}
+.seg input{position:absolute;opacity:0;width:0;height:0}
+.seg input:checked + span{color:var(--sello)}
+.seg label:has(input:checked){border-color:var(--sello);background:var(--sello-soft);color:var(--sello)}
+.seg label:has(input:focus-visible){outline:2px solid var(--focus);outline-offset:2px}
+
+/* ---------- panel de datos base ---------- */
+.metrics{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
+  gap:1px;background:var(--line);border:1px solid var(--line);
+  border-radius:8px;overflow:hidden;margin-top:16px;
+}
+.metric{background:var(--surface-2);padding:10px 12px}
+.metric .k{font-size:12px;color:var(--ink-3)}
+.metric .v{font-family:var(--mono);font-size:16px;font-weight:500;margin-top:3px;font-variant-numeric:tabular-nums}
+.metric .v small{font-size:11px;color:var(--ink-3);font-weight:400}
+
+/* ---------- tablas ---------- */
+.tbl-wrap{overflow-x:auto;margin-top:14px}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th{
+  text-align:left;font-size:12px;
+  color:var(--ink-3);font-weight:600;padding:6px 8px;border-bottom:1px solid var(--line-strong);
+  white-space:nowrap;
+}
+td{padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
+td.n,th.n{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+tr.prescrito td{color:var(--ink-3)}
+.pill{
+  display:inline-block;font-size:10.5px;font-family:var(--mono);
+  padding:2px 7px;border-radius:20px;white-space:nowrap;
+}
+.pill.ok{background:var(--sello-soft);color:var(--sello)}
+.pill.warn{background:var(--ambar-soft);color:var(--ambar)}
+.pill.bad{background:var(--oxido-soft);color:var(--oxido)}
+
+/* ---------- carátula de resultados ---------- */
+.out{
+  background:var(--surface);border:1px solid var(--line);
+  border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden;
+}
+.out-head{padding:14px 16px;border-bottom:1px solid var(--line);background:var(--surface-2)}
+.out-head h2{font-size:17px}
+.out-head p{margin:3px 0 0;font-size:12px;color:var(--ink-3)}
+.blk{border-bottom:1px solid var(--line)}
+.blk-h{
+  display:flex;justify-content:space-between;align-items:baseline;gap:10px;
+  padding:10px 16px 4px;
+}
+.blk-h .t{font-size:13px;color:var(--sello);font-weight:600}
+.blk-h .s{font-family:var(--mono);font-size:12.5px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.line{display:flex;justify-content:space-between;gap:12px;padding:5px 16px}
+.line:last-child{padding-bottom:11px}
+.line .c{min-width:0}
+.line .c .n1{font-size:13.5px}
+.line .c .n2{font-size:11px;color:var(--ink-3);font-family:var(--mono);word-break:break-word}
+.line .c .fund{font-size:10.5px;color:var(--sello);letter-spacing:.02em}
+.line .amt{font-family:var(--mono);font-size:13.5px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.line.neg .amt{color:var(--oxido)}
+.total{
+  display:flex;justify-content:space-between;align-items:baseline;gap:12px;
+  padding:16px;background:#000;color:#fff;flex-wrap:wrap;
+}
+.total .t{font-family:var(--serif);font-size:16px;font-weight:600}
+.total .v{font:700 19px/1.15 "DSEG14",var(--sans);color:#000;background:#E6E7E8;border:3px solid #14B8A6;border-radius:12px;padding:8px 12px 7px;white-space:nowrap}
+.total .sub{font-size:12px;color:#D1D5DB;display:block;font-family:var(--sans);font-weight:400}
+.empty{padding:26px 16px;color:var(--ink-3);font-size:13px;text-align:center}
+.fiscal{padding:12px 16px;border-top:1px solid var(--line);font-size:11.5px;color:var(--ink-3)}
+.fiscal b{color:var(--ink-2)}
+.fiscal div{display:flex;justify-content:space-between;gap:10px;margin-top:3px;font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+/* ---------- notas al pie ---------- */
+.notas{margin-top:26px;border-top:1px solid var(--line);padding-top:18px}
+.notas h2{font-size:16px;margin-bottom:10px}
+.notas-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.nota{font-size:12.5px;color:var(--ink-2)}
+.nota h3{font-size:14px;font-weight:600;color:var(--sello);font-family:var(--sans);margin-bottom:4px}
+.nota p{margin:0 0 6px}
+.err{color:var(--oxido);font-size:12.5px;margin-top:10px}
+.mini-btn{
+  font:500 12px/1 var(--sans);border:1px dashed var(--line-strong);background:none;
+  color:var(--ink-2);padding:7px 10px;border-radius:7px;cursor:pointer;margin-top:10px;
+}
+.mini-btn:hover{border-color:var(--sello);color:var(--sello);border-style:solid}
+.del{
+  border:0;background:none;color:var(--ink-3);cursor:pointer;font-size:16px;line-height:1;padding:2px 6px;border-radius:5px;
+}
+.del:hover{color:var(--oxido);background:var(--oxido-soft)}
+
+@media print{
+  header.top,.col-in,.aviso,.tools,.notas{display:none!important}
+  .col-out{position:static;max-height:none;overflow:visible}
+  body{background:#fff;color:#000;font-size:11pt}
+  .out{border:0;box-shadow:none}
+  .wrap{padding:0}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+<header class="top">
+  <div class="top-in">
+    <div class="brand">
+      <h1>Calculadora Laboral</h1>
+      <span class="sub">Finiquitos, liquidaciones y prestaciones conforme a la LFT</span>
+    </div>
+    <div class="tools">
+      <button class="btn" id="btn-demo" type="button">Cargar ejemplo</button>
+      <button class="btn" id="btn-reset" type="button">Limpiar</button>
+      <button class="btn" id="btn-print" type="button">Imprimir</button>
+      <button class="btn primary" id="btn-copy" type="button">Copiar desglose</button>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <p class="aviso">
+    <span>
+      <b>Guía de cálculo: no es asesoría legal ni un dictamen.</b>
+      Trae cargados los valores de 2026: salario mínimo de $315.04 general y $440.87 en la Zona Libre de la Frontera Norte, y UMA de $117.31. Para otro ejercicio, cámbielos.
+      El tope del art. 486, la base de salarios caídos y la capitalización de intereses dependen del criterio que se sostenga en cada asunto.
+      Sus datos se quedan en este navegador: no se envían ni se guardan.
+    </span>
+  </p>
+
+  <div class="grid">
+    <div class="col-in">
+
+      <!-- ============ 1. DATOS DE LA RELACIÓN ============ -->
+      <details class="card" open>
+        <summary><span class="num">01</span><h2>Datos de la relación de trabajo</h2></summary>
+        <div class="card-body">
+          <div class="fields">
+            <div class="f wide">
+              <label for="expediente">Referencia del cálculo (opcional)</label>
+              <input type="text" id="expediente" placeholder="Una referencia, sin datos personales">
+            </div>
+            <div class="f">
+              <label for="ingreso">Fecha de ingreso</label>
+              <input type="date" id="ingreso">
+            </div>
+            <div class="f">
+              <label for="baja">Fecha de terminación</label>
+              <input type="date" id="baja">
+            </div>
+            <div class="f">
+              <label for="salario">Salario</label>
+              <input type="number" id="salario" min="0" step="0.01" placeholder="0.00">
+            </div>
+            <div class="f">
+              <label for="periodo">Periodicidad</label>
+              <select id="periodo">
+                <option value="30">Mensual</option>
+                <option value="15">Quincenal</option>
+                <option value="7">Semanal</option>
+                <option value="1" selected>Diario</option>
+              </select>
+            </div>
+            <div class="f">
+              <label for="motivo">Causa de terminación</label>
+              <select id="motivo">
+                <option value="despido">Despido injustificado (art. 48)</option>
+                <option value="renuncia">Renuncia voluntaria</option>
+                <option value="rescision47">Rescisión sin responsabilidad para el patrón (art. 47)</option>
+                <option value="rescision51">Rescisión imputable al patrón (art. 51 y 52)</option>
+                <option value="mutuo">Mutuo consentimiento (art. 53-I)</option>
+                <option value="muerte">Muerte del trabajador (art. 53-II)</option>
+                <option value="incapacidad">Incapacidad física o mental (art. 53-IV y 54)</option>
+              </select>
+              <span class="help">Preselecciona los conceptos aplicables; puedes activarlos o desactivarlos manualmente.</span>
+            </div>
+            <div class="f">
+              <label for="diasAguinaldo">Días de aguinaldo</label>
+              <input type="number" id="diasAguinaldo" min="0" step="0.5" value="15">
+              <span class="help">Mínimo legal 15 días (art. 87).</span>
+            </div>
+            <div class="f">
+              <label for="primaVacPct">Prima vacacional %</label>
+              <input type="number" id="primaVacPct" min="0" step="0.5" value="25">
+              <span class="help">Mínimo legal 25% (art. 80).</span>
+            </div>
+            <div class="f">
+              <label for="otrasPrest">Otras prestaciones (diario)</label>
+              <input type="number" id="otrasPrest" min="0" step="0.01" value="0">
+              <span class="help">Importe diario de prestaciones que integran el salario: despensa, fondo de ahorro gravable, bonos fijos (art. 84).</span>
+            </div>
+            <div class="f">
+              <label for="zona">Salario mínimo aplicable</label>
+              <select id="zona">
+                <option value="315.04">General &mdash; $315.04 (2026)</option>
+                <option value="440.87" selected>Zona Libre Frontera Norte &mdash; $440.87 (2026)</option>
+                <option value="custom">Otro (capturar)</option>
+              </select>
+            </div>
+            <div class="f">
+              <label for="smd">Salario mínimo diario</label>
+              <input type="number" id="smd" min="0" step="0.01" value="440.87">
+            </div>
+            <div class="f">
+              <label for="uma">UMA diaria</label>
+              <input type="number" id="uma" min="0" step="0.01" value="117.31">
+              <span class="help">Solo para la referencia fiscal del panel de resultados.</span>
+            </div>
+          </div>
+
+          <div class="metrics" id="metrics"></div>
+          <p class="err" id="err" hidden></p>
+        </div>
+      </details>
+
+      <!-- ============ 2. FINIQUITO ============ -->
+      <details class="card" open>
+        <summary><span class="num">02</span><h2>Finiquito &mdash; partes proporcionales</h2><span class="tag-off" id="tag-fin"></span></summary>
+        <div class="card-body">
+          <div class="row-checks">
+            <label class="check"><input type="checkbox" id="cAguinaldo" checked><span><b>Aguinaldo proporcional</b> &mdash; días devengados del ejercicio en curso (art. 87).</span></label>
+            <label class="check"><input type="checkbox" id="cVacProp" checked><span><b>Vacaciones proporcionales</b> del periodo en curso (arts. 76 y 79).</span></label>
+            <label class="check"><input type="checkbox" id="cPrimaVac" checked><span><b>Prima vacacional</b> sobre las vacaciones que se paguen (art. 80).</span></label>
+          </div>
+          <div class="fields" style="margin-top:14px">
+            <div class="f">
+              <label for="diasPend">Días de salario devengados y no pagados</label>
+              <input type="number" id="diasPend" min="0" step="0.5" value="0">
+            </div>
+            <div class="f">
+              <label for="diasDescPend">Días de descanso semanal no pagados</label>
+              <input type="number" id="diasDescPend" min="0" step="0.5" value="0">
+            </div>
+          </div>
+
+          <p class="lbl" style="margin-top:18px">Vacaciones de periodos anteriores</p>
+          <p class="help" style="font-size:12px;color:var(--ink-3);margin:4px 0 0">
+            Marca únicamente los periodos que el trabajador no disfrutó ni se le pagaron. La tabla aplica los días del art. 76 vigentes en cada aniversario: los periodos cumplidos antes del 1 de enero de 2023 se rigen por la tabla anterior a la reforma.
+          </p>
+          <div class="tbl-wrap"><table id="tbl-vac"><thead><tr>
+            <th style="width:34px"></th><th>Periodo</th><th class="n">Aniversario</th><th class="n">Días art. 76</th><th class="n">Importe</th><th>Prescripción</th>
+          </tr></thead><tbody></tbody></table></div>
+        </div>
+      </details>
+
+      <!-- ============ 3. INDEMNIZACIONES ============ -->
+      <details class="card" open>
+        <summary><span class="num">03</span><h2>Indemnizaciones y prima de antigüedad</h2><span class="tag-off" id="tag-ind"></span></summary>
+        <div class="card-body">
+          <div class="row-checks">
+            <label class="check"><input type="checkbox" id="cTresMeses"><span><b>Indemnización constitucional</b> &mdash; 3 meses (90 días) de salario integrado (art. 48 y 50-III).</span></label>
+            <label class="check"><input type="checkbox" id="cVeinteDias"><span><b>20 días por año de servicio</b> (art. 50-II). No procede en todo despido: aplica si el patrón se excepciona de reinstalar (art. 49) o si el trabajador rescinde por causa imputable al patrón (arts. 51 y 52).</span></label>
+            <label class="check"><input type="checkbox" id="cArt50I"><span><b>Alternativa art. 50-I</b> (relación por tiempo determinado): la mitad del tiempo servido si duró menos de un año; 6 meses por el primer año más 20 días por cada año siguiente si excedió de un año.</span></label>
+            <label class="check"><input type="checkbox" id="cPrimaAnt"><span><b>Prima de antigüedad</b> &mdash; 12 días por año, con salario topado a dos veces el mínimo (arts. 162, 485 y 486).</span></label>
+          </div>
+          <div class="fields" style="margin-top:14px">
+            <div class="f">
+              <label for="baseIndem">Base de las indemnizaciones</label>
+              <select id="baseIndem">
+                <option value="sdi" selected>Salario diario integrado (art. 89)</option>
+                <option value="sd">Salario diario</option>
+              </select>
+            </div>
+            <div class="f">
+              <label for="modoAnios">Cómputo de los 20 días por año</label>
+              <select id="modoAnios">
+                <option value="prop" selected>Años y fracción proporcional</option>
+                <option value="enteros">Solo años completos</option>
+              </select>
+            </div>
+            <div class="f wide">
+              <fieldset>
+                <p class="lbl" style="margin-bottom:6px">Tope salarial del art. 486</p>
+                <div class="seg">
+                  <label><input type="radio" name="tope" value="pa" checked><span>Solo a la prima de antigüedad</span></label>
+                  <label><input type="radio" name="tope" value="todo"><span>A todas las indemnizaciones</span></label>
+                  <label><input type="radio" name="tope" value="no"><span>Sin tope</span></label>
+                </div>
+                <span class="help" style="display:block;margin-top:6px">El tope de dos salarios mínimos aplica de forma expresa a la prima de antigüedad por remisión del art. 162-II. Extenderlo a las indemnizaciones de los arts. 48 y 50 es una postura de defensa que suele controvertirse; elígela solo si la vas a sostener.</span>
+              </fieldset>
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <!-- ============ 4. SALARIOS CAÍDOS ============ -->
+      <details class="card">
+        <summary><span class="num">04</span><h2>Salarios caídos e intereses</h2><span class="tag-off" id="tag-sc"></span></summary>
+        <div class="card-body">
+          <div class="row-checks">
+            <label class="check"><input type="checkbox" id="cSalCaidos"><span><b>Salarios vencidos</b> desde la separación, hasta por doce meses (art. 48, párrafo segundo).</span></label>
+            <label class="check"><input type="checkbox" id="cIntereses"><span><b>Intereses</b> del 2% mensual sobre el importe de quince meses de salario, cuando el procedimiento excede de doce meses (art. 48, párrafo tercero).</span></label>
+          </div>
+          <div class="fields" style="margin-top:14px">
+            <div class="f">
+              <label for="fechaCorte">Fecha de corte del cálculo</label>
+              <input type="date" id="fechaCorte">
+              <span class="help">Fecha de pago, de laudo o de la audiencia que estés proyectando.</span>
+            </div>
+            <div class="f">
+              <label for="baseSC">Base de los salarios vencidos</label>
+              <select id="baseSC">
+                <option value="sd" selected>Salario diario</option>
+                <option value="sdi">Salario diario integrado</option>
+              </select>
+            </div>
+            <div class="f">
+              <label for="modoInt">Cálculo de los intereses</label>
+              <select id="modoInt">
+                <option value="compuesto" selected>Capitalizable (compuesto)</option>
+                <option value="simple">Simple</option>
+              </select>
+              <span class="help">La ley los prevé capitalizables al momento del pago; el cálculo simple sirve como escenario conservador.</span>
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <!-- ============ 5. TIEMPO EXTRAORDINARIO ============ -->
+      <details class="card">
+        <summary><span class="num">05</span><h2>Tiempo extraordinario</h2><span class="tag-off" id="tag-te"></span></summary>
+        <div class="card-body">
+          <div class="fields">
+            <div class="f">
+              <label for="tipoJornada">Jornada</label>
+              <select id="tipoJornada">
+                <option value="8" selected>Diurna &mdash; 8 horas</option>
+                <option value="7.5">Mixta &mdash; 7.5 horas</option>
+                <option value="7">Nocturna &mdash; 7 horas</option>
+              </select>
+            </div>
+            <div class="f">
+              <label for="limiteExtra">Límite semanal de horas dobles</label>
+              <select id="limiteExtra">
+                <option value="9" selected>9 horas (2026 y 2027)</option>
+                <option value="10">10 horas (2028)</option>
+                <option value="11">11 horas (2029)</option>
+                <option value="12">12 horas (2030)</option>
+              </select>
+              <span class="help">Transitorio cuarto, DOF 01-05-2026.</span>
+            </div>
+            <div class="f wide">
+              <fieldset>
+                <p class="lbl" style="margin-bottom:6px">Forma de captura</p>
+                <div class="seg">
+                  <label><input type="radio" name="modoTE" value="semana" checked><span>Horas por semana</span></label>
+                  <label><input type="radio" name="modoTE" value="manual"><span>Horas dobles y triples</span></label>
+                </div>
+              </fieldset>
+            </div>
+            <div class="f te-semana">
+              <label for="hrsSem">Horas extra por semana</label>
+              <input type="number" id="hrsSem" min="0" step="0.5" value="0">
+            </div>
+            <div class="f te-semana">
+              <label for="numSem">Número de semanas</label>
+              <input type="number" id="numSem" min="0" step="1" value="0">
+            </div>
+            <div class="f te-manual" hidden>
+              <label for="hrsDobles">Horas dobles</label>
+              <input type="number" id="hrsDobles" min="0" step="0.5" value="0">
+            </div>
+            <div class="f te-manual" hidden>
+              <label for="hrsTriples">Horas triples</label>
+              <input type="number" id="hrsTriples" min="0" step="0.5" value="0">
+            </div>
+          </div>
+          <p class="help" style="margin-top:12px;font-size:12px;color:var(--ink-3)">
+            Las horas dentro del límite semanal se pagan con 100% más y las que lo rebasan con 200% más (arts. 66 y 68).
+            El valor de la hora se obtiene dividiendo el salario diario entre las horas de la jornada.
+          </p>
+        </div>
+      </details>
+
+      <!-- ============ 6. DESCANSOS, FESTIVOS Y PRIMA DOMINICAL ============ -->
+      <details class="card">
+        <summary><span class="num">06</span><h2>Descansos, días festivos y prima dominical</h2><span class="tag-off" id="tag-desc"></span></summary>
+        <div class="card-body">
+          <div class="fields">
+            <div class="f">
+              <label for="diasDescLab">Días de descanso laborados</label>
+              <input type="number" id="diasDescLab" min="0" step="1" value="0">
+            </div>
+            <div class="f">
+              <label for="multDesc">Pago del día de descanso</label>
+              <select id="multDesc">
+                <option value="2" selected>Salario doble adicional (art. 73)</option>
+                <option value="3">Triple total (día + doble)</option>
+              </select>
+              <span class="help">Elige el triple total cuando el salario del periodo no cubrió el día de descanso.</span>
+            </div>
+            <div class="f">
+              <label for="diasFest">Días festivos laborados</label>
+              <input type="number" id="diasFest" min="0" step="1" value="0">
+              <span class="help">Salario doble adicional (arts. 74 y 75).</span>
+            </div>
+            <div class="f">
+              <label for="domingos">Domingos laborados</label>
+              <input type="number" id="domingos" min="0" step="1" value="0">
+            </div>
+            <div class="f">
+              <label for="primaDomPct">Prima dominical %</label>
+              <input type="number" id="primaDomPct" min="0" step="1" value="25">
+              <span class="help">Mínimo 25% sobre el salario del día (art. 71).</span>
+            </div>
+            <div class="f">
+              <label for="septimos">Séptimos días no pagados</label>
+              <input type="number" id="septimos" min="0" step="1" value="0">
+              <span class="help">Descanso semanal con goce de salario no cubierto (art. 69).</span>
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <!-- ============ 7. PTU ============ -->
+      <details class="card">
+        <summary><span class="num">07</span><h2>Participación de utilidades</h2><span class="tag-off" id="tag-ptu"></span></summary>
+        <div class="card-body">
+          <div class="fields">
+            <div class="f">
+              <label for="ptuMonto">PTU individual determinada</label>
+              <input type="number" id="ptuMonto" min="0" step="0.01" value="0">
+              <span class="help">Importe que arroja el reparto de la empresa antes de aplicar el límite.</span>
+            </div>
+            <div class="f">
+              <label for="ptuPromedio">Promedio de PTU de los 3 años anteriores</label>
+              <input type="number" id="ptuPromedio" min="0" step="0.01" value="0">
+            </div>
+            <div class="f">
+              <label for="ptuTope">Límite aplicable</label>
+              <select id="ptuTope">
+                <option value="si" selected>Aplicar límite del art. 127-VIII</option>
+                <option value="no">Sin límite</option>
+              </select>
+              <span class="help">El límite es tres meses de salario o el promedio de la PTU de los últimos tres años, el que resulte más favorable al trabajador.</span>
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <!-- ============ 8. OTROS ============ -->
+      <details class="card">
+        <summary><span class="num">08</span><h2>Otros conceptos y deducciones</h2><span class="tag-off" id="tag-otros"></span></summary>
+        <div class="card-body">
+          <p class="help" style="font-size:12px;color:var(--ink-3);margin:0 0 4px">
+            Captura cualquier prestación extraordinaria pactada (bono, comisiones, gratificación, vales) o los descuentos que procedan (crédito Infonavit, Fonacot, anticipos, herramienta). Usa importes negativos para las deducciones.
+          </p>
+          <div class="tbl-wrap"><table id="tbl-otros"><thead><tr>
+            <th>Concepto</th><th class="n" style="width:150px">Importe</th><th style="width:40px"></th>
+          </tr></thead><tbody></tbody></table></div>
+          <button class="mini-btn" id="add-otro" type="button">+ Agregar concepto</button>
+        </div>
+      </details>
+    </div>
+
+    <!-- ============ RESULTADO ============ -->
+    <div class="col-out">
+      <div class="out">
+        <div class="out-head">
+          <h2 id="out-title">Desglose de cálculo</h2>
+          <p id="out-sub">Captura la fecha de ingreso, la de terminación y el salario.</p>
+        </div>
+        <div id="out-body"><p class="empty">Sin datos suficientes para calcular.</p></div>
+        <div class="total"><div><span class="t">Total</span><span class="sub" id="total-sub"></span></div><span class="v" id="total-v">$0.00</span></div>
+        <div class="fiscal" id="fiscal"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="notas">
+    <h2>Criterios que aplica la calculadora</h2>
+    <div class="notas-grid">
+      <div class="nota">
+        <h3>Salario integrado</h3>
+        <p>Se integra con el salario diario más la parte proporcional de aguinaldo, prima vacacional y las prestaciones que se capturen como integrantes (art. 84). Es la base de las indemnizaciones conforme al art. 89.</p>
+      </div>
+      <div class="nota">
+        <h3>Vacaciones</h3>
+        <p>La tabla del art. 76 vigente desde el 1 de enero de 2023 se aplica a los periodos cumplidos a partir de esa fecha; los anteriores conservan los días de la tabla previa. El periodo en curso se paga en proporción al tiempo transcurrido desde el último aniversario.</p>
+      </div>
+      <div class="nota">
+        <h3>Prima de antigüedad</h3>
+        <p>Doce días por año de servicio con el salario topado a dos veces el mínimo del área. Procede en todo caso de separación justificada, despido y muerte; en renuncia voluntaria únicamente con quince años o más de servicios (art. 162).</p>
+      </div>
+      <div class="nota">
+        <h3>Salarios caídos</h3>
+        <p>Se computan desde la fecha de separación y hasta por doce meses. Si al término de ese plazo el juicio no ha concluido o no se ha cumplido el laudo, se generan intereses del 2% mensual sobre el importe de quince meses de salario, capitalizables al momento del pago.</p>
+      </div>
+      <div class="nota">
+        <h3>Prescripción</h3>
+        <p>La etiqueta de la tabla de vacaciones es orientativa: toma como referencia la fecha de terminación y el plazo de un año del art. 516, contado a partir del vencimiento de los seis meses del art. 81. En un juicio el cómputo corre hasta la presentación de la demanda y admite interrupción.</p>
+      </div>
+      <div class="nota">
+        <h3>Referencia fiscal</h3>
+        <p>El panel muestra únicamente los montos exentos del art. 93 de la LISR: noventa UMA por año de servicio en indemnizaciones y prima de antigüedad, treinta UMA de aguinaldo y quince de prima vacacional. No calcula la retención, que exige aplicar las tarifas del ejercicio.</p>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+"use strict";
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+const MXN = new Intl.NumberFormat("es-MX",{style:"currency",currency:"MXN",minimumFractionDigits:2});
+const NUM = new Intl.NumberFormat("es-MX",{minimumFractionDigits:2,maximumFractionDigits:2});
+const money = n => MXN.format(isFinite(n)?n:0);
+const num = (id,d=0) => { const v = parseFloat(($(id)||{}).value); return isFinite(v)?v:d; };
+const REFORMA_VAC = new Date(2023,0,1);
+
+function parseD(s){
+  if(!s) return null;
+  const p = s.split("-").map(Number);
+  if(p.length!==3 || !p.every(isFinite)) return null;
+  const d = new Date(p[0],p[1]-1,p[2]);
+  return isNaN(d) ? null : d;
+}
+function fmtD(d){ return d ? d.toLocaleDateString("es-MX",{day:"2-digit",month:"short",year:"numeric"}) : "—"; }
+function days(a,b){ return Math.round((b-a)/86400000); }
+function addYears(d,n){ const x=new Date(d.getFullYear()+n,d.getMonth(),d.getDate()); return x; }
+function addMonths(d,n){ const x=new Date(d.getFullYear(),d.getMonth()+n,d.getDate()); return x; }
+function mesesEntre(a,b){
+  let m = (b.getFullYear()-a.getFullYear())*12 + (b.getMonth()-a.getMonth());
+  if(b.getDate() < a.getDate()) m--;
+  return Math.max(0,m);
+}
+/* Art. 76 vigente desde el 1-ene-2023 */
+function vacNueva(a){
+  if(a<=0) return 0;
+  if(a<=4) return 10+2*a;
+  if(a===5) return 20;
+  return 20 + 2*Math.ceil((a-5)/5);
+}
+/* Tabla anterior a la reforma de vacaciones dignas */
+function vacAnterior(a){
+  if(a<=0) return 0;
+  if(a<=4) return 4+2*a;
+  if(a===5) return 14;
+  return 14 + 2*Math.ceil((a-5)/5);
+}
+function diasVacDe(anio, fechaAniversario){
+  return fechaAniversario >= REFORMA_VAC ? vacNueva(anio) : vacAnterior(anio);
+}
+
+/* ---------------- estado de tablas dinámicas ---------------- */
+let firmaVac = "";
+const otros = [];
+
+function renderOtros(){
+  const tb = $("#tbl-otros tbody");
+  tb.innerHTML = otros.map((o,i)=>(
+    '<tr><td><input type="text" data-otro-c="'+i+'" value="'+String(o.c).replace(/"/g,"&quot;")+'" placeholder="Concepto"></td>'+
+    '<td class="n"><input type="number" step="0.01" data-otro-m="'+i+'" value="'+o.m+'"></td>'+
+    '<td><button class="del" type="button" data-del="'+i+'" aria-label="Eliminar concepto">&times;</button></td></tr>'
+  )).join("");
+  tb.querySelectorAll("[data-otro-c]").forEach(el=>el.addEventListener("input",e=>{ otros[+e.target.dataset.otroC].c = e.target.value; calc(); }));
+  tb.querySelectorAll("[data-otro-m]").forEach(el=>el.addEventListener("input",e=>{ otros[+e.target.dataset.otroM].m = parseFloat(e.target.value)||0; calc(); }));
+  tb.querySelectorAll("[data-del]").forEach(el=>el.addEventListener("click",e=>{ otros.splice(+e.target.dataset.del,1); renderOtros(); calc(); }));
+}
+$("#add-otro").addEventListener("click",()=>{ otros.push({c:"",m:0}); renderOtros(); calc(); });
+
+/* ---------------- periodos de vacaciones ---------------- */
+function periodosVac(ingreso, baja){
+  const out = [];
+  if(!ingreso || !baja) return out;
+  let n = 1;
+  while(n <= 60){
+    const fin = addYears(ingreso, n);
+    if(fin > baja) break;
+    const ini = addYears(ingreso, n-1);
+    const d = diasVacDe(n, fin);
+    const exigible = addMonths(fin, 6);
+    const prescrito = days(exigible, baja) > 365;
+    out.push({n, ini, fin, dias:d, prescrito, exigible});
+    n++;
+  }
+  return out;
+}
+function renderVac(periodos, sd){
+  const tb = $("#tbl-vac tbody");
+  const firma = periodos.map(p=>p.n+":"+p.dias).join("|");
+  if(firma !== firmaVac){
+    firmaVac = firma;
+    if(!periodos.length){
+      tb.innerHTML = '<tr><td colspan="6" style="color:var(--ink-3);font-size:12.5px">Sin periodos anuales cumplidos. Las vacaciones del periodo en curso se calculan en proporción arriba.</td></tr>';
+    }else{
+      tb.innerHTML = periodos.map(p=>(
+        '<tr class="'+(p.prescrito?"prescrito":"")+'">'+
+        '<td><input type="checkbox" data-vac="'+p.n+'" aria-label="Adeudar periodo '+p.n+'"></td>'+
+        '<td>Año '+p.n+' <span style="color:var(--ink-3);font-size:11.5px">'+fmtD(p.ini)+' a '+fmtD(p.fin)+'</span></td>'+
+        '<td class="n">'+fmtD(p.fin)+'</td>'+
+        '<td class="n">'+p.dias+'</td>'+
+        '<td class="n" data-vac-imp="'+p.n+'">—</td>'+
+        '<td>'+(p.prescrito
+            ? '<span class="pill bad">consumada</span>'
+            : '<span class="pill ok">vigente</span>')+'</td></tr>'
+      )).join("");
+      tb.querySelectorAll("[data-vac]").forEach(el=>el.addEventListener("change",calc));
+    }
+  }
+  periodos.forEach(p=>{
+    const c = tb.querySelector('[data-vac-imp="'+p.n+'"]');
+    if(c) c.textContent = money(p.dias*sd);
+  });
+}
+
+/* ---------------- cálculo ---------------- */
+function calc(){
+  const ingreso = parseD($("#ingreso").value);
+  const baja    = parseD($("#baja").value);
+  const salario = num("#salario");
+  const divisor = parseFloat($("#periodo").value)||1;
+  const sd      = salario/divisor;
+  const diasAg  = num("#diasAguinaldo",15);
+  const pvPct   = num("#primaVacPct",25)/100;
+  const otrasP  = num("#otrasPrest");
+  const smd     = num("#smd");
+  const uma     = num("#uma");
+  const err     = $("#err");
+
+  err.hidden = true;
+  if(ingreso && baja && baja < ingreso){
+    err.hidden = false;
+    err.textContent = "La fecha de terminación es anterior a la de ingreso. Corrige las fechas para calcular.";
+  }
+
+  const ok = !!(ingreso && baja && baja >= ingreso && sd > 0);
+
+  /* --- antigüedad --- */
+  let antDias=0, antAnios=0, aniosComp=0, diasEnCurso=0, vacEnCurso=0, sdi=sd, factor=1, mesesRest=0, diasRest=0;
+  if(ingreso && baja && baja>=ingreso){
+    antDias   = days(ingreso, baja);
+    antAnios  = antDias/365;
+    aniosComp = 0;
+    while(addYears(ingreso, aniosComp+1) <= baja && aniosComp < 60) aniosComp++;
+    const ultAniv = addYears(ingreso, aniosComp);
+    diasEnCurso  = days(ultAniv, baja);
+    vacEnCurso   = diasVacDe(aniosComp+1, addYears(ingreso, aniosComp+1));
+    mesesRest    = mesesEntre(ultAniv, baja);
+    diasRest     = days(addMonths(ultAniv, mesesRest), baja);
+  }
+  if(sd>0){
+    factor = 1 + (diasAg/365) + (vacEnCurso*pvPct/365) + (otrasP/sd);
+    sdi = sd*factor;
+  }
+  const topeSalario = 2*smd;
+  const topeModo = ($('input[name="tope"]:checked')||{}).value || "pa";
+  const sdPA  = Math.min(sd, topeSalario);
+  const baseIndemSel = $("#baseIndem").value === "sd" ? sd : sdi;
+  const baseIndem = topeModo === "todo" ? Math.min(baseIndemSel, topeSalario) : baseIndemSel;
+
+  /* --- métricas --- */
+  const mm = mesesRest;
+  $("#metrics").innerHTML = ok ? [
+    ["Antigüedad", aniosComp+" <small>a</small> "+mesesRest+" <small>m</small> "+diasRest+" <small>d</small>"],
+    ["Salario diario", money(sd)],
+    ["Factor de integración", factor.toFixed(4)],
+    ["Salario diario integrado", money(sdi)],
+    ["Vacaciones periodo en curso", vacEnCurso+" días"],
+    ["Tope art. 486 (2 SM)", money(topeSalario)]
+  ].map(m=>'<div class="metric"><div class="k">'+m[0]+'</div><div class="v">'+m[1]+'</div></div>').join("") : "";
+
+  /* --- tabla de vacaciones --- */
+  const periodos = periodosVac(ingreso, baja);
+  renderVac(periodos, sd);
+
+  /* --- bloques de resultado --- */
+  const bloques = [];
+  const B = (t)=>{ const b={t,lineas:[]}; bloques.push(b); return b; };
+  const L = (b,n1,n2,fund,amt,neg)=>{ b.lineas.push({n1,n2,fund,amt,neg:!!neg}); };
+
+  /* 1. Finiquito */
+  if(ok){
+    const fin = B("Finiquito");
+    if($("#cAguinaldo").checked){
+      const iniAg = (ingreso > new Date(baja.getFullYear(),0,1)) ? ingreso : new Date(baja.getFullYear(),0,1);
+      const dAg = Math.min(365, days(iniAg, baja)+1);
+      const imp = sd*diasAg*dAg/365;
+      L(fin,"Aguinaldo proporcional", NUM.format(diasAg)+" días × "+dAg+"/365 × "+money(sd), "Art. 87", imp);
+    }
+    let diasVacTot = 0, detVac = [];
+    if($("#cVacProp").checked && diasEnCurso>0){
+      const d = vacEnCurso*diasEnCurso/365;
+      diasVacTot += d;
+      detVac.push("periodo en curso "+NUM.format(d)+" d");
+      L(fin,"Vacaciones proporcionales", vacEnCurso+" días × "+diasEnCurso+"/365 = "+NUM.format(d)+" días × "+money(sd), "Arts. 76 y 79", d*sd);
+    }
+    const marcados = periodos.filter(p=>{ const c=$('[data-vac="'+p.n+'"]'); return c && c.checked; });
+    if(marcados.length){
+      const dTot = marcados.reduce((s,p)=>s+p.dias,0);
+      diasVacTot += dTot;
+      detVac.push("periodos anteriores "+dTot+" d");
+      L(fin,"Vacaciones de periodos anteriores",
+        marcados.map(p=>"año "+p.n+": "+p.dias+" d").join("; ")+" = "+dTot+" días × "+money(sd),
+        "Arts. 76 y 81"+(marcados.some(p=>p.prescrito)?" — incluye periodos con prescripción consumada":""), dTot*sd);
+    }
+    if($("#cPrimaVac").checked && diasVacTot>0){
+      L(fin,"Prima vacacional", NUM.format(diasVacTot)+" días × "+money(sd)+" × "+NUM.format(pvPct*100)+"%", "Art. 80", diasVacTot*sd*pvPct);
+    }
+    const dp = num("#diasPend");
+    if(dp>0) L(fin,"Salarios devengados", NUM.format(dp)+" días × "+money(sd), "Art. 82", dp*sd);
+    const ddp = num("#diasDescPend");
+    if(ddp>0) L(fin,"Días de descanso semanal", NUM.format(ddp)+" días × "+money(sd), "Art. 69", ddp*sd);
+    if(!fin.lineas.length) bloques.pop();
+  }
+
+  /* 2. Indemnizaciones */
+  if(ok){
+    const ind = B("Indemnizaciones");
+    const motivo = $("#motivo").value;
+    if($("#cTresMeses").checked){
+      L(ind,"Indemnización constitucional","90 días × "+money(baseIndem),"Arts. 48 y 50-III",90*baseIndem);
+    }
+    if($("#cVeinteDias").checked){
+      const a = $("#modoAnios").value==="enteros" ? aniosComp : antAnios;
+      L(ind,"20 días por año de servicio","20 × "+NUM.format(a)+" años × "+money(baseIndem),"Art. 50-II",20*a*baseIndem);
+    }
+    if($("#cArt50I").checked){
+      let d, det;
+      if(antAnios < 1){ d = antDias/2; det = "mitad del tiempo servido: "+NUM.format(d)+" días × "+money(baseIndem); }
+      else { d = 180 + 20*Math.max(0,(antAnios-1)); det = "6 meses del primer año + 20 días por cada año siguiente = "+NUM.format(d)+" días × "+money(baseIndem); }
+      L(ind,"Indemnización art. 50-I (tiempo determinado)", det, "Art. 50-I", d*baseIndem);
+    }
+    if($("#cPrimaAnt").checked){
+      const d = 12*antAnios;
+      let nota = "Art. 162";
+      if((motivo==="renuncia"||motivo==="mutuo") && antAnios < 15) nota += " — en retiro voluntario exige 15 años de servicios";
+      L(ind,"Prima de antigüedad","12 días × "+NUM.format(antAnios)+" años × "+money(sdPA)+(sd>topeSalario?" (salario topado)":""), nota, d*sdPA);
+    }
+    if(!ind.lineas.length) bloques.pop();
+  }
+
+  /* 3. Salarios caídos */
+  if(ok){
+    const sc = B("Salarios caídos e intereses");
+    const corte = parseD($("#fechaCorte").value);
+    const baseSC = $("#baseSC").value==="sdi" ? sdi : sd;
+    if(corte && corte > baja){
+      const dTot = days(baja, corte);
+      if($("#cSalCaidos").checked){
+        const d = Math.min(dTot, 365);
+        L(sc,"Salarios vencidos", d+" días ("+fmtD(baja)+" a "+(d<dTot?fmtD(addYears(baja,1)):fmtD(corte))+") × "+money(baseSC),
+          "Art. 48"+(dTot>365?" — tope de 12 meses alcanzado":""), d*baseSC);
+      }
+      if($("#cIntereses").checked){
+        const mTot = mesesEntre(baja, corte);
+        const n = Math.max(0, mTot-12);
+        if(n>0){
+          const capital = 15*30*baseSC;
+          const compuesto = $("#modoInt").value!=="simple";
+          const imp = compuesto ? capital*(Math.pow(1.02,n)-1) : capital*0.02*n;
+          L(sc,"Intereses sobre 15 meses de salario",
+            "capital "+money(capital)+" × 2% × "+n+" meses "+(compuesto?"(capitalizable)":"(simple)"),
+            "Art. 48, párrafo tercero", imp);
+        }else{
+          L(sc,"Intereses","aún no se cumplen 12 meses desde la separación","Art. 48, párrafo tercero",0);
+        }
+      }
+    }else if($("#cSalCaidos").checked || $("#cIntereses").checked){
+      L(sc,"Salarios caídos","captura una fecha de corte posterior a la terminación","Art. 48",0);
+    }
+    if(!sc.lineas.length) bloques.pop();
+  }
+
+  /* 4. Tiempo extraordinario */
+  if(ok){
+    const te = B("Tiempo extraordinario");
+    const hj = parseFloat($("#tipoJornada").value)||8;
+    const vh = sd/hj;
+    let hd=0, ht=0;
+    if(($('input[name="modoTE"]:checked')||{}).value === "manual"){
+      hd = num("#hrsDobles"); ht = num("#hrsTriples");
+    }else{
+      const h = num("#hrsSem"), s = num("#numSem");
+      const lim = parseFloat($("#limiteExtra").value)||9; hd = Math.min(lim,h)*s; ht = Math.max(0,h-lim)*s;
+    }
+    if(hd>0) L(te,"Horas extra dobles", NUM.format(hd)+" h × "+money(vh)+" × 2","Art. 66", hd*vh*2);
+    if(ht>0) L(te,"Horas extra triples", NUM.format(ht)+" h × "+money(vh)+" × 3","Art. 68", ht*vh*3);
+    if(!te.lineas.length) bloques.pop();
+  }
+
+  /* 5. Descansos y festivos */
+  if(ok){
+    const ds = B("Descansos, festivos y prima dominical");
+    const nd = num("#diasDescLab"), md = parseFloat($("#multDesc").value)||2;
+    if(nd>0) L(ds,"Días de descanso laborados", nd+" días × "+money(sd)+" × "+md,"Art. 73", nd*sd*md);
+    const nf = num("#diasFest");
+    if(nf>0) L(ds,"Días festivos laborados", nf+" días × "+money(sd)+" × 2","Arts. 74 y 75", nf*sd*2);
+    const dom = num("#domingos"), pd = num("#primaDomPct",25)/100;
+    if(dom>0) L(ds,"Prima dominical", dom+" domingos × "+money(sd)+" × "+NUM.format(pd*100)+"%","Art. 71", dom*sd*pd);
+    const sep = num("#septimos");
+    if(sep>0) L(ds,"Séptimos días no pagados", sep+" días × "+money(sd),"Art. 69", sep*sd);
+    if(!ds.lineas.length) bloques.pop();
+  }
+
+  /* 6. PTU */
+  if(ok){
+    const ptu = num("#ptuMonto");
+    if(ptu>0){
+      const b = B("Participación de utilidades");
+      if($("#ptuTope").value==="si"){
+        const t1 = 90*sd, t2 = num("#ptuPromedio");
+        const tope = Math.max(t1,t2);
+        const imp = Math.min(ptu, tope);
+        L(b,"PTU del ejercicio","determinada "+money(ptu)+"; límite "+money(tope)+" (3 meses "+money(t1)+" vs. promedio "+money(t2)+")",
+          "Art. 127-VIII", imp);
+      }else{
+        L(b,"PTU del ejercicio","sin aplicar límite","Art. 117", ptu);
+      }
+    }
+  }
+
+  /* 7. Otros */
+  if(otros.some(o=>o.m!==0)){
+    const b = B("Otros conceptos y deducciones");
+    otros.forEach(o=>{ if(o.m!==0) L(b, o.c||"Concepto", "", "", o.m, o.m<0); });
+  }
+
+  /* --- render --- */
+  const body = $("#out-body");
+  let total = 0;
+  if(!ok || !bloques.length){
+    body.innerHTML = '<p class="empty">'+(ok?"Activa algún concepto para ver el desglose.":"Captura fecha de ingreso, fecha de terminación y salario.")+'</p>';
+  }else{
+    body.innerHTML = bloques.map(b=>{
+      const sub = b.lineas.reduce((s,l)=>s+l.amt,0);
+      total += sub;
+      return '<div class="blk"><div class="blk-h"><span class="t">'+b.t+'</span><span class="s">'+money(sub)+'</span></div>'+
+        b.lineas.map(l=>(
+          '<div class="line'+(l.neg?" neg":"")+'"><div class="c"><div class="n1">'+l.n1+'</div>'+
+          (l.n2?'<div class="n2">'+l.n2+'</div>':'')+
+          (l.fund?'<div class="fund">'+l.fund+'</div>':'')+
+          '</div><span class="amt">'+money(l.amt)+'</span></div>'
+        )).join("")+'</div>';
+    }).join("");
+  }
+  $("#total-v").textContent = money(total);
+  const nombre = $("#expediente").value.trim();
+  $("#out-title").textContent = nombre || "Desglose de cálculo";
+  $("#out-sub").textContent = ok
+    ? fmtD(ingreso)+" a "+fmtD(baja)+" · "+aniosComp+" años "+mesesRest+" meses · SD "+money(sd)+" · SDI "+money(sdi)
+    : "Captura la fecha de ingreso, la de terminación y el salario.";
+  $("#total-sub").textContent = ok ? "importe bruto, antes de retenciones" : "";
+
+  /* --- referencia fiscal --- */
+  const fis = $("#fiscal");
+  if(ok && uma>0){
+    const aniosEx = Math.floor(antAnios) + ((antAnios - Math.floor(antAnios))*12 > 6 ? 1 : 0);
+    fis.innerHTML = '<b>Referencia fiscal (art. 93 LISR) — montos exentos, no es cálculo de retención</b>'+
+      '<div><span>Indemnizaciones y prima de antigüedad: 90 UMA × '+aniosEx+' años</span><span>'+money(90*uma*aniosEx)+'</span></div>'+
+      '<div><span>Aguinaldo: 30 UMA</span><span>'+money(30*uma)+'</span></div>'+
+      '<div><span>Prima vacacional: 15 UMA</span><span>'+money(15*uma)+'</span></div>';
+  }else{ fis.innerHTML = ""; }
+
+  /* --- etiquetas de tarjetas --- */
+  const tag = (id,n)=>{ const e=$(id); if(e) e.textContent = n>0 ? money(n) : ""; };
+  const sumB = t => { const b = bloques.find(x=>x.t===t); return b ? b.lineas.reduce((s,l)=>s+l.amt,0) : 0; };
+  tag("#tag-fin", sumB("Finiquito"));
+  tag("#tag-ind", sumB("Indemnizaciones"));
+  tag("#tag-sc",  sumB("Salarios caídos e intereses"));
+  tag("#tag-te",  sumB("Tiempo extraordinario"));
+  tag("#tag-desc",sumB("Descansos, festivos y prima dominical"));
+  tag("#tag-ptu", sumB("Participación de utilidades"));
+  tag("#tag-otros", sumB("Otros conceptos y deducciones"));
+
+  window.__desglose = {bloques, total, ok, ingreso, baja, sd, sdi, nombre};
+}
+
+/* ---------------- interacciones ---------------- */
+document.addEventListener("input", e=>{ if(e.target.closest("input,select,textarea")) calc(); });
+document.addEventListener("change", e=>{
+  const t = e.target;
+  if(t.id==="zona" && t.value!=="custom") $("#smd").value = t.value;
+  if(t.id==="motivo") preset(t.value);
+  if(t.name==="modoTE"){
+    const manual = t.value==="manual";
+    $$(".te-semana").forEach(el=>el.hidden = manual);
+    $$(".te-manual").forEach(el=>el.hidden = !manual);
+  }
+  calc();
+});
+
+function preset(m){
+  const set = (id,v)=>{ $(id).checked = v; };
+  const despido = (m==="despido"||m==="rescision51");
+  set("#cTresMeses",despido); set("#cVeinteDias",m==="rescision51");
+  set("#cSalCaidos",despido); set("#cIntereses",despido);
+  set("#cArt50I",false);
+  const antDias = (()=>{ const i=parseD($("#ingreso").value), b=parseD($("#baja").value); return (i&&b&&b>=i)?days(i,b):0; })();
+  const anios = antDias/365;
+  set("#cPrimaAnt", despido || m==="rescision47" || m==="muerte" || m==="incapacidad" || ((m==="renuncia"||m==="mutuo") && anios>=15));
+  if(m==="incapacidad"){
+    const sd = num("#salario")/(parseFloat($("#periodo").value)||1);
+    if(!otros.some(o=>/art\. 54/i.test(o.c))){
+      otros.push({c:"Indemnización art. 54 — un mes de salario", m:+(30*sd).toFixed(2)});
+      renderOtros();
+    }
+  }
+  if(despido && !$("#fechaCorte").value){
+    const hoy = new Date();
+    $("#fechaCorte").value = hoy.toISOString().slice(0,10);
+  }
+}
+
+$("#btn-print").addEventListener("click",()=>window.print());
+$("#btn-copy").addEventListener("click",async ()=>{
+  const d = window.__desglose;
+  const btn = $("#btn-copy");
+  if(!d || !d.ok){ btn.textContent = "Nada que copiar"; setTimeout(()=>btn.textContent="Copiar desglose",1600); return; }
+  const L = [];
+  L.push((d.nombre||"Cálculo de prestaciones").toUpperCase());
+  L.push("Ingreso: "+fmtD(d.ingreso)+"   Terminación: "+fmtD(d.baja));
+  L.push("Salario diario: "+money(d.sd)+"   Salario diario integrado: "+money(d.sdi));
+  L.push("");
+  d.bloques.forEach(b=>{
+    L.push(b.t.toUpperCase());
+    b.lineas.forEach(l=>{
+      L.push("  "+l.n1.padEnd(46," ").slice(0,46)+" "+money(l.amt).padStart(16," "));
+      if(l.n2) L.push("    "+l.n2);
+      if(l.fund) L.push("    ("+l.fund+")");
+    });
+    L.push("  Subtotal".padEnd(48," ")+money(b.lineas.reduce((s,x)=>s+x.amt,0)).padStart(16," "));
+    L.push("");
+  });
+  L.push("TOTAL".padEnd(48," ")+money(d.total).padStart(16," "));
+  L.push("");
+  L.push("Importe bruto, antes de retenciones. Cálculo de apoyo; verifica salario mínimo, UMA y criterios aplicables.");
+  try{
+    await navigator.clipboard.writeText(L.join("\n"));
+    btn.textContent = "Copiado";
+  }catch(e){
+    const ta = document.createElement("textarea");
+    ta.value = L.join("\n"); document.body.appendChild(ta); ta.select();
+    try{ document.execCommand("copy"); btn.textContent="Copiado"; }catch(e2){ btn.textContent="No se pudo copiar"; }
+    ta.remove();
+  }
+  setTimeout(()=>btn.textContent="Copiar desglose",1600);
+});
+
+$("#btn-reset").addEventListener("click",()=>{
+  $$("input").forEach(el=>{
+    if(el.type==="checkbox"){ el.checked = ["cAguinaldo","cVacProp","cPrimaVac"].includes(el.id); }
+    else if(el.type==="number"){
+      const def = {diasAguinaldo:"15",primaVacPct:"25",primaDomPct:"25",smd:$("#zona").value==="custom"?"0":$("#zona").value,uma:"117.31"}[el.id];
+      el.value = def !== undefined ? def : (el.dataset.keep?el.value:"0");
+      if(el.id==="salario") el.value = "";
+    }
+    else el.value = "";
+  });
+  otros.length = 0; renderOtros(); firmaVac = ""; calc();
+});
+
+$("#btn-demo").addEventListener("click",()=>{
+  $("#expediente").value = "Ejemplo — despido injustificado";
+  $("#ingreso").value = "2019-03-04";
+  $("#baja").value    = "2026-05-15";
+  $("#periodo").value = "30";
+  $("#salario").value = "18000";
+  $("#motivo").value  = "despido";
+  $("#fechaCorte").value = "2026-08-20";
+  $("#hrsSem").value = "6"; $("#numSem").value = "52";
+  preset("despido");
+  firmaVac = ""; calc();
+});
+
+renderOtros();
+calc();
+})();
+</script>
+
+</body></html>
