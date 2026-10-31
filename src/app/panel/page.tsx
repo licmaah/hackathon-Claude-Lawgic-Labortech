@@ -1,40 +1,43 @@
-import { redirect } from "next/navigation";
+"use client";
+
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { Panel } from "@/componentes/Panel";
-import { clienteServidor } from "@/lib/supabase/servidor";
+import type { Avance } from "@/lib/avance";
+import { clienteNavegador } from "@/lib/supabase/navegador";
 
-export const dynamic = "force-dynamic";
+type Datos = { id: string; razon: string; avance: Partial<Avance> | null; esAdmin: boolean };
 
-export default async function PaginaPanel() {
-  const supabase = await clienteServidor();
-  const {
-    data: { user }
-  } = await supabase.auth.getUser();
-  if (!user) redirect("/entrar");
+export default function PaginaPanel() {
+  const router = useRouter();
+  const [datos, setDatos] = useState<Datos | null>(null);
+  const [fallo, setFallo] = useState(false);
 
-  let { data: empresa } = await supabase
-    .from("empresas")
-    .select("id, razon_social, avance")
-    .eq("user_id", user.id)
-    .maybeSingle();
-  if (!empresa) {
-    const creada = await supabase
-      .from("empresas")
-      .insert({ user_id: user.id })
-      .select("id, razon_social, avance")
-      .single();
-    empresa = creada.data;
-  }
-  if (!empresa) throw new Error("No se pudo abrir la empresa");
+  useEffect(() => {
+    (async () => {
+      const supabase = clienteNavegador();
+      const {
+        data: { user }
+      } = await supabase.auth.getUser();
+      if (!user) {
+        router.replace("/entrar");
+        return;
+      }
+      const campos = "id, razon_social, avance";
+      let { data: empresa } = await supabase.from("empresas").select(campos).eq("user_id", user.id).maybeSingle();
+      if (!empresa) {
+        ({ data: empresa } = await supabase.from("empresas").insert({ user_id: user.id }).select(campos).single());
+      }
+      if (!empresa) {
+        setFallo(true);
+        return;
+      }
+      const { data: admin } = await supabase.from("admins").select("user_id").eq("user_id", user.id).maybeSingle();
+      setDatos({ id: empresa.id, razon: empresa.razon_social, avance: empresa.avance, esAdmin: !!admin });
+    })().catch(() => setFallo(true));
+  }, [router]);
 
-  const { data: admin } = await supabase.from("admins").select("user_id").eq("user_id", user.id).maybeSingle();
-
-  return (
-    <Panel
-      modo="cuenta"
-      empresaId={empresa.id}
-      razonInicial={empresa.razon_social}
-      avanceInicial={empresa.avance}
-      esAdmin={!!admin}
-    />
-  );
+  if (fallo) return <main className="vista"><p className="aviso mal" role="alert">No se pudo abrir su empresa. Recargue la página.</p></main>;
+  if (!datos) return <main className="vista"><p role="status">Abriendo su empresa…</p></main>;
+  return <Panel modo="cuenta" empresaId={datos.id} razonInicial={datos.razon} avanceInicial={datos.avance} esAdmin={datos.esAdmin} />;
 }

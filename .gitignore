@@ -5,9 +5,9 @@ node_modules/
 *.tsbuildinfo
 next-env.d.ts
 .DS_Store
-.vercel
 .claude/
 
 .hyperframes/
 video/snapshots/
 video/renders/
+out/

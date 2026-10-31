@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
 import { Marca } from "@/componentes/Marca";
+import { ruta } from "@/lib/ruta";
 import { clienteNavegador } from "@/lib/supabase/navegador";
 
 function Formulario() {
@@ -28,7 +29,7 @@ function Formulario() {
       const { data, error } = await supabase.auth.signUp({
         email: correo,
         password: clave,
-        options: { emailRedirectTo: `${window.location.origin}/auth/callback` }
+        options: { emailRedirectTo: `${window.location.origin}${ruta("/panel/")}` }
       });
       setEnviando(false);
       if (error) return setFallo(traducir(error.message));

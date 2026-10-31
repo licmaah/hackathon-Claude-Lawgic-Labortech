@@ -44,12 +44,12 @@ Puntos abiertos que un abogado debe verificar:
 
 ## Tecnología
 
-Next.js 15, Supabase (autenticación y Postgres con RLS) y la API de Claude (`claude-opus-5-5`, salida estructurada con esquema JSON).
+Sitio estático con Next.js 15 para GitHub Pages. Supabase da la autenticación, Postgres con RLS y las funciones que llaman a la API de Claude (`claude-opus-5-5`, salida estructurada con esquema JSON) y a Stripe en modo de prueba.
 
 ```
 src/datos/        catálogo legal: puntos, documentos, apercibimientos
 src/lib/reglas.ts plazos y multas, con pruebas en pruebas/
-src/app/api/revisar/route.ts  revisión de documentos con Claude
+supabase/functions/    revisión con Claude y pago de prueba
 src/componentes/Panel.tsx     panel de la empresa
 supabase/migrations/          esquema y políticas RLS
 ```
@@ -62,7 +62,7 @@ cp .env.example .env.local
 npm run dev
 ```
 
-Complete `.env.local` con la URL y la clave publicable de Supabase, con `ANTHROPIC_API_KEY` y, para el pago de prueba, con `STRIPE_SECRET_KEY`. Ese flujo solo acepta claves `sk_test_`. Aplique la migración de `supabase/migrations/`. Para dar acceso de despacho, inserte el `user_id` de la cuenta en la tabla `admins`.
+Complete `.env.local` con la URL y la clave publicable de Supabase. Guarde `ANTHROPIC_API_KEY` y `STRIPE_SECRET_KEY` como secretos de las funciones de Supabase; el pago solo acepta claves `sk_test_`. Aplique la migración de `supabase/migrations/`. Para dar acceso de despacho, inserte el `user_id` de la cuenta en la tabla `admins`.
 
 ```bash
 npm test

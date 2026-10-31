@@ -1,5 +1,5 @@
-import Image from "next/image";
 import Link from "next/link";
+import { ruta } from "@/lib/ruta";
 import { AnuncioCalculadora } from "@/componentes/AnuncioCalculadora";
 import { AvisoLegal } from "@/componentes/AvisoLegal";
 import { DemoPunto } from "@/componentes/DemoPunto";
@@ -45,7 +45,7 @@ export default function Portada() {
           </div>
         </article>
         <article className="modulo">
-          <div className="icono reloj gira2"><Image src="/logo-labortech-reloj.png" alt="" width={751} height={1453} /></div>
+          <div className="icono reloj gira2"><img src={ruta("/logo-labortech-reloj.png")} alt="" width={751} height={1453} /></div>
           <div>
             <h2>{APERCIBIMIENTOS.length} etapas, de la puerta al juicio</h2>
             <p>Qué advierte la autoridad, qué pasa si no atiende y cuándo vence su plazo, contado en días hábiles.</p>

@@ -1,24 +1,34 @@
+"use client";
+
 import Link from "next/link";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { Marca } from "@/componentes/Marca";
 import { avanceInicial, pesos, resumen } from "@/lib/avance";
-import { clienteServidor } from "@/lib/supabase/servidor";
+import { clienteNavegador } from "@/lib/supabase/navegador";
 
-export const dynamic = "force-dynamic";
+type Empresa = { id: string; razon_social: string; avance: never; updated_at: string };
 
-export default async function Despacho() {
-  const supabase = await clienteServidor();
-  const {
-    data: { user }
-  } = await supabase.auth.getUser();
-  if (!user) redirect("/entrar");
-  const { data: admin } = await supabase.from("admins").select("user_id").eq("user_id", user.id).maybeSingle();
-  if (!admin) redirect("/panel");
+export default function Despacho() {
+  const router = useRouter();
+  const [empresas, setEmpresas] = useState<Empresa[] | null>(null);
 
-  const { data: empresas } = await supabase
-    .from("empresas")
-    .select("id, razon_social, avance, updated_at")
-    .order("updated_at", { ascending: false });
+  useEffect(() => {
+    (async () => {
+      const supabase = clienteNavegador();
+      const {
+        data: { user }
+      } = await supabase.auth.getUser();
+      if (!user) return router.replace("/entrar");
+      const { data: admin } = await supabase.from("admins").select("user_id").eq("user_id", user.id).maybeSingle();
+      if (!admin) return router.replace("/panel");
+      const { data } = await supabase
+        .from("empresas")
+        .select("id, razon_social, avance, updated_at")
+        .order("updated_at", { ascending: false });
+      setEmpresas((data ?? []) as Empresa[]);
+    })();
+  }, [router]);
 
   const filas = (empresas ?? []).map((e) => {
     const a = avanceInicial(e.avance);
@@ -36,7 +46,9 @@ export default async function Despacho() {
       <main className="vista">
         <h1 style={{ fontSize: 32 }}>Empresas del despacho</h1>
         <div className="foja tabla-env">
-          {filas.length === 0 ? (
+          {empresas === null ? (
+            <p role="status">Cargando empresas…</p>
+          ) : filas.length === 0 ? (
             <p>Aún no hay empresas registradas. Comparta el enlace de registro con sus clientes.</p>
           ) : (
             <table>

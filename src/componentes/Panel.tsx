@@ -25,6 +25,7 @@ import {
   type ResultadoIA
 } from "@/lib/avance";
 import { plazoHabil } from "@/lib/reglas";
+import { funcion } from "@/lib/ruta";
 import { clienteNavegador } from "@/lib/supabase/navegador";
 import { AvisoLegal } from "./AvisoLegal";
 import { ControlMarca } from "./ControlMarca";
@@ -499,7 +500,12 @@ function RevisionIA({ docId, muestra, resultado, demo, cambiar }: { docId: strin
     datos.set("archivo", archivo);
     datos.set("consentimiento", acepta ? "si" : "no");
     try {
-      const r = await fetch("/api/revisar", { method: "POST", body: datos });
+      const { data: sesion } = await clienteNavegador().auth.getSession();
+      const r = await fetch(funcion("revisar"), {
+        method: "POST",
+        headers: { Authorization: `Bearer ${sesion.session?.access_token ?? ""}` },
+        body: datos
+      });
       const json = await r.json();
       if (!r.ok) setFallo(json.error);
       else cambiar((a) => ({ ...a, ia: { ...a.ia, [docId]: json } }));

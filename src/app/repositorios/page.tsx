@@ -1,24 +1,21 @@
 import { BarraSitio } from "@/componentes/BarraSitio";
-import { ComprarPrueba } from "@/componentes/ComprarPrueba";
+import { AvisoPago, ComprarPrueba } from "@/componentes/ComprarPrueba";
 import { A_LA_VENTA, GRATUITOS } from "@/datos/repositorios";
 import { pesos } from "@/lib/avance";
+import { ruta } from "@/lib/ruta";
 
 export const metadata = {
   title: "Repositorios | LaborTech",
   description: "Herramientas laborales gratuitas en GitHub y cinco proyectos de demostración."
 };
 
-export default async function Repositorios({ searchParams }: { searchParams: Promise<{ pago?: string }> }) {
-  const { pago } = await searchParams;
-
+export default function Repositorios() {
   return (
     <>
       <BarraSitio />
       <main className="repos">
         <h1>Repositorios</h1>
-        {pago === "prueba" && (
-          <p className="aviso" role="status">Pago de prueba completado. Stripe no realizó ningún cobro y no se entregó ningún archivo.</p>
-        )}
+        <AvisoPago />
 
         <section aria-labelledby="gratis">
           <h2 id="gratis">Gratuitos</h2>
@@ -29,7 +26,7 @@ export default async function Repositorios({ searchParams }: { searchParams: Pro
                 <h3>{r.nombre}</h3>
                 <p>{r.descripcion}</p>
                 <div className="acciones">
-                  <a href={r.abrir} className="btn lleno">{r.accion}</a>
+                  <a href={ruta(r.abrir)} className="btn lleno">{r.accion}</a>
                   <a href={r.github} className="btn">Ver en GitHub</a>
                 </div>
               </article>

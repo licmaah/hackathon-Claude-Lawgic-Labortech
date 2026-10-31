@@ -1,8 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef } from "react";
+import { ruta } from "@/lib/ruta";
 import { Marca } from "./Marca";
 
 const FILAS = [
@@ -136,7 +136,7 @@ export function EscenaHero() {
           </div>
           <div className="obj o-reloj">
             <div className="obj-entra"><div className="obj-flota">
-              <Image src="/logo-labortech-reloj.png" alt="" width={751} height={1453} priority />
+              <img src={ruta("/logo-labortech-reloj.png")} alt="" width={751} height={1453} />
             </div></div>
           </div>
           <div className="obj o-sello"><div className="obj-entra"><div className="obj-flota"><Sello /></div></div></div>

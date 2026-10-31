@@ -1,4 +1,5 @@
 import { BarraSitio } from "@/componentes/BarraSitio";
+import { ruta } from "@/lib/ruta";
 
 export const metadata = {
   title: "Calculadora laboral gratuita | LaborTech",
@@ -9,7 +10,7 @@ export default function PaginaCalculadora() {
   return (
     <div className="calc-pagina">
       <BarraSitio />
-      <iframe className="calc-marco" src="/repositorios/calculadora-laboral/index.html" title="Calculadora laboral" />
+      <iframe className="calc-marco" src={ruta("/repositorios/calculadora-laboral/index.html")} title="Calculadora laboral" />
     </div>
   );
 }
