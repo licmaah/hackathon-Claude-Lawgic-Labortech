@@ -127,7 +127,7 @@ export function Panel(props: Props) {
             ) : (
               <>
                 <span>Demo: se guarda solo en este navegador</span>
-                <Link href="/entrar?modo=crear">Crear cuenta</Link>
+                <Link href="/entrar">Crear cuenta</Link>
               </>
             )}
           </div>
@@ -533,7 +533,7 @@ function RevisionIA({ docId, muestra, resultado, demo, cambiar }: { docId: strin
       <h3>Revisar el documento con IA</h3>
       {demo ? (
         <p style={{ fontSize: 15 }}>
-          La revisión con IA requiere una <Link href="/entrar?modo=crear">cuenta de empresa</Link>. En la demo puede marcar los requisitos a mano.
+          La revisión con IA requiere una <Link href="/entrar">cuenta de empresa</Link>. En la demo puede marcar los requisitos a mano.
         </p>
       ) : (
         <>

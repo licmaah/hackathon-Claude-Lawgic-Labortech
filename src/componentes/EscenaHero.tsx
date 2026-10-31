@@ -148,7 +148,7 @@ export function EscenaHero() {
             <p>Vea qué asentaría el acta hoy, qué multa prevé la ley y qué plazo corre después de cada apercibimiento.</p>
           </div>
           <div className="acciones">
-            <Link href="/entrar?modo=crear" className="btn lleno">Crear cuenta de empresa</Link>
+            <Link href="/entrar" className="btn lleno">Crear cuenta de empresa</Link>
             <Link href="/demo" className="btn">Probar sin cuenta</Link>
           </div>
         </div>

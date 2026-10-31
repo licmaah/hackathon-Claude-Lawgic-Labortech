@@ -17,7 +17,7 @@ Una empresa en Baja California puede recibir hoy a un inspector de la Secretarí
 | **Calculadora** | Finiquitos, liquidaciones, salarios caídos, tiempo extra, descansos y PTU, gratis y sin enviar datos. Está en `/calculadora`. |
 | **Repositorios** | 2 gratuitos, en `public/repositorios/`, y 5 proyectos ficticios con precios de demostración para mostrar el flujo de venta en modo de prueba de Stripe. Está en `/repositorios`. |
 
-Pruébelo sin cuenta en `/demo`. La revisión con IA requiere cuenta.
+Sitio: https://licmaah.github.io/hackathon-Claude-Lawgic-Labortech/. Pruébelo sin cuenta en la sección Probar sin cuenta. La revisión con IA requiere cuenta, a la que se entra con un enlace por correo.
 
 Video de presentación: [`video/labortech-inspeccion.mp4`](video/labortech-inspeccion.mp4), con su fuente en `video/`.
 
